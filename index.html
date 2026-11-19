@@ -5,140 +5,228 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Reja">
-<meta name="theme-color" content="#0f1020">
+<meta name="theme-color" content="#0f1020" id="themeColor">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
 <title>Reja</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>
+/* mavzuni sahifa chizilishidan oldin qo'yamiz — miltillamasin */
+(function(){var m='auto';try{m=localStorage.getItem('reja-theme')||'auto'}catch(e){}
+var d=new Date(Date.now()+18e6),h=d.getUTCHours()*60+d.getUTCMinutes(),light=h>=6*60+30&&h<17*60+30;
+document.documentElement.dataset.theme=m==='auto'?(light?'light':'dark'):m;})();
+</script>
 <style>
-:root{
-  --bg:#0f1020;--card:#1a1b2e;--card2:#222440;--line:#2d2f4d;--text:#f2f3fa;--muted:#8d90b3;
-  --ish:#5b8cff;--sport:#ff8a3d;--ibodat:#2fd39a;--kitob:#b07cff;--danger:#ff5d73;
-  --safe-t:env(safe-area-inset-top);--safe-b:env(safe-area-inset-bottom);
+:root,[data-theme=dark]{
+  --bg:#0d0e1c;--bg2:#14152b;--card:#1a1b2e;--card2:#24264a;--line:#2d2f4d;--text:#f2f3fa;--muted:#8d90b3;
+  --nav:#12132acc;--shadow:0 10px 30px -12px #0008;--sheet:#1a1b2e;
+  --blob1:#5b3df066;--blob2:#2fd39a33;--blob3:#ff8a3d33;
 }
+[data-theme=light]{
+  --bg:#f3f4fb;--bg2:#ffffff;--card:#ffffff;--card2:#eef0f8;--line:#e4e6f1;--text:#16172e;--muted:#6d7192;
+  --nav:#ffffffd9;--shadow:0 10px 28px -14px #2a2d6a40;--sheet:#ffffff;
+  --blob1:#8a6bff40;--blob2:#2fd39a33;--blob3:#ffb26b40;
+}
+:root{--ish:#5b8cff;--sport:#ff7a2f;--ibodat:#1fc48b;--kitob:#a06bff;--danger:#ff4f6a;
+  --safe-t:env(safe-area-inset-top);--safe-b:env(safe-area-inset-bottom)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,-apple-system,system-ui,sans-serif;}
-body{min-height:100vh;padding-bottom:calc(92px + var(--safe-b));overscroll-behavior:none}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,-apple-system,system-ui,sans-serif;transition:background .5s,color .5s}
+body{min-height:100vh;padding-bottom:calc(96px + var(--safe-b));overscroll-behavior:none;overflow-x:hidden}
 button,input,select{font:inherit;color:inherit}
+/* fon "suzuvchi" dog'lari */
+.blobs{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.blobs i{position:absolute;width:340px;height:340px;border-radius:50%;filter:blur(70px);animation:float 18s ease-in-out infinite}
+.blobs i:nth-child(1){background:var(--blob1);top:-120px;left:-80px}
+.blobs i:nth-child(2){background:var(--blob2);top:40%;right:-140px;animation-delay:-6s}
+.blobs i:nth-child(3){background:var(--blob3);bottom:-140px;left:20%;animation-delay:-12s}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,30px) scale(1.1)}66%{transform:translate(-30px,20px) scale(.95)}}
+
 .wrap{max-width:560px;margin:0 auto;padding:0 18px}
-header{padding:calc(18px + var(--safe-t)) 0 8px}
-.hello{color:var(--muted);font-size:14px;font-weight:600}
-.title{font-size:28px;font-weight:800;letter-spacing:-.5px;margin:2px 0 0}
-.hero{margin-top:16px;border-radius:24px;padding:18px;display:flex;align-items:center;gap:16px;
-  background:linear-gradient(135deg,#3b2fd1 0%,#6a3df0 50%,#a24dff 100%);box-shadow:0 12px 30px -10px #6a3df088}
-.ring{width:78px;height:78px;flex:none;position:relative}
+header{padding:calc(16px + var(--safe-t)) 0 6px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.hello{color:var(--muted);font-size:14px;font-weight:700}
+.title{font-size:30px;font-weight:800;letter-spacing:-.6px;margin:2px 0 0;transition:.3s}
+.theme-btn{width:46px;height:46px;border-radius:16px;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;font-size:21px;cursor:pointer;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.theme-btn span{display:block;transition:transform .5s cubic-bezier(.5,1.8,.4,.8)}
+.theme-btn.spin span{transform:rotate(360deg) scale(1.15)}
+.theme-btn small{position:absolute;bottom:2px;font-size:8px;font-weight:800;color:var(--muted)}
+
+/* hero */
+.hero{margin-top:14px;border-radius:26px;padding:18px;display:flex;align-items:center;gap:16px;color:#fff;position:relative;overflow:hidden;
+  background:linear-gradient(120deg,#3b2fd1,#6a3df0,#a24dff,#6a3df0,#3b2fd1);background-size:300% 100%;animation:grad 12s ease infinite;box-shadow:0 14px 34px -12px #6a3df099}
+.hero::after{content:"";position:absolute;width:160px;height:160px;border-radius:50%;background:#ffffff1a;right:-40px;top:-60px;animation:float 10s ease-in-out infinite}
+@keyframes grad{0%,100%{background-position:0 50%}50%{background-position:100% 50%}}
+.ring{width:80px;height:80px;flex:none;position:relative}
 .ring svg{transform:rotate(-90deg)}
 .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;font-weight:800}
-.hero h3{margin:0;font-size:17px}
-.hero p{margin:4px 0 0;font-size:13px;opacity:.85;line-height:1.4}
+.hero h3{margin:0;font-size:18px}
+.hero p{margin:4px 0 0;font-size:13px;opacity:.9;line-height:1.4}
 .chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-.chip{font-size:11px;font-weight:700;padding:4px 9px;border-radius:99px;background:#ffffff26}
+.chip{font-size:11px;font-weight:800;padding:4px 9px;border-radius:99px;background:#ffffff2b}
+.quote{margin-top:12px;font-size:13px;color:var(--muted);font-weight:600;line-height:1.5;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.quote b{font-size:18px}
+
 h2{font-size:18px;margin:24px 0 10px;display:flex;align-items:center;justify-content:space-between}
-h2 small{font-size:12px;color:var(--muted);font-weight:600}
-.card{background:var(--card);border-radius:20px;padding:14px;border:1px solid var(--line)}
+h2 small{font-size:12px;color:var(--muted);font-weight:700}
+.card{background:var(--card);border-radius:22px;padding:14px;border:1px solid var(--line);box-shadow:var(--shadow)}
 .list{display:flex;flex-direction:column;gap:8px}
-.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;transition:.2s}
-.item.done{opacity:.5}.item.done .t{text-decoration:line-through}
-.check{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);flex:none;display:grid;place-items:center;cursor:pointer;background:none;padding:0;transition:.15s}
-.check.on{border-color:transparent;background:var(--c,var(--ish))}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;transition:transform .2s,opacity .3s,background .5s,border-color .3s;box-shadow:var(--shadow)}
+.item:active{transform:scale(.98)}
+.pop{animation:pop .45s cubic-bezier(.2,1.4,.4,1) both;animation-delay:calc(var(--i,0)*45ms)}
+@keyframes pop{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+.item.done{opacity:.55}.item.done .t{text-decoration:line-through}
+.check{width:28px;height:28px;border-radius:10px;border:2px solid var(--line);flex:none;display:grid;place-items:center;cursor:pointer;background:none;padding:0;transition:.2s}
+.check.on{border-color:transparent;background:var(--c,var(--ish));animation:bounce .4s}
 .check.on::after{content:"";width:10px;height:6px;border:3px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+@keyframes bounce{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
 .grow{flex:1;min-width:0}
 .t{font-weight:700;font-size:15px;word-wrap:break-word}
-.s{color:var(--muted);font-size:12px;font-weight:600;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ff5d7322;color:var(--danger)}
-.icon-btn{background:var(--card2);border:0;border-radius:11px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none;font-size:15px}
-.empty{text-align:center;color:var(--muted);padding:26px 10px;font-size:14px;line-height:1.5}
-.empty .e{font-size:34px;margin-bottom:6px}
-/* add form */
+.s{color:var(--muted);font-size:12px;font-weight:700;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ff4f6a22;color:var(--danger);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+.icon-btn{background:var(--card2);border:0;border-radius:12px;width:36px;height:36px;display:grid;place-items:center;cursor:pointer;flex:none;font-size:15px;transition:.15s}
+.icon-btn:active{transform:scale(.88)}
+.empty{text-align:center;color:var(--muted);padding:26px 10px;font-size:14px;line-height:1.5;font-weight:600}
+.empty .e{font-size:38px;margin-bottom:6px;display:inline-block;animation:wobble 3s ease-in-out infinite}
+@keyframes wobble{0%,100%{transform:rotate(0)}25%{transform:rotate(-8deg)}75%{transform:rotate(8deg)}}
 .add{display:flex;flex-direction:column;gap:10px}
-.in{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:15px;outline:none}
-.in:focus{border-color:var(--ish)}
+.in{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:16px;outline:none;transition:.2s}
+.in:focus{border-color:var(--ish);box-shadow:0 0 0 4px #5b8cff22}
 .row{display:flex;gap:8px;align-items:center}
-.toggle{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:0 12px;height:48px;cursor:pointer;font-size:14px;font-weight:700;white-space:nowrap;user-select:none}
-.toggle.on{border-color:var(--danger);color:var(--danger);background:#ff5d7314}
-.btn{border:0;border-radius:14px;height:48px;padding:0 18px;font-weight:800;font-size:15px;cursor:pointer;background:var(--c,var(--ish));color:#fff}
+.toggle{display:flex;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:0 12px;height:48px;cursor:pointer;font-size:14px;font-weight:800;white-space:nowrap;user-select:none;transition:.2s}
+.toggle.on{border-color:var(--danger);color:var(--danger);background:#ff4f6a14}
+.btn{border:0;border-radius:14px;height:48px;padding:0 18px;font-weight:800;font-size:15px;cursor:pointer;background:var(--c,var(--ish));color:#fff;transition:transform .15s,filter .2s;position:relative;overflow:hidden}
+.btn:active{transform:scale(.96)}
 .btn.ghost{background:var(--card2);color:var(--text)}
 .btn.sm{height:36px;font-size:13px;border-radius:11px;padding:0 12px}
-input[type=time].in{width:auto;min-width:110px}
+.btn .rip{position:absolute;border-radius:50%;background:#ffffff66;transform:scale(0);animation:rip .6s ease-out;pointer-events:none}
+@keyframes rip{to{transform:scale(4);opacity:0}}
+input[type=time].in{width:118px;flex:none;padding:13px 10px}
+#addTask{min-width:0;padding:0 10px}
+
 /* tab bar */
-nav{position:fixed;left:0;right:0;bottom:0;padding:8px 10px calc(8px + var(--safe-b));background:#12132acc;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);z-index:9}
-nav .in-nav{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
-nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;color:var(--muted);font-size:11px;font-weight:700}
-nav button .ic{font-size:22px;filter:grayscale(1);opacity:.6;transition:.2s}
+nav{position:fixed;left:0;right:0;bottom:0;padding:8px 10px calc(8px + var(--safe-b));background:var(--nav);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line);z-index:9;transition:background .5s}
+nav .in-nav{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+nav .pill{position:absolute;top:2px;height:calc(100% - 4px);width:25%;border-radius:16px;background:var(--card2);transition:transform .4s cubic-bezier(.3,1.4,.5,1)}
+nav button{position:relative;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 0;cursor:pointer;color:var(--muted);font-size:11px;font-weight:800}
+nav button .ic{font-size:22px;filter:grayscale(1);opacity:.55;transition:.3s}
 nav button.on{color:var(--text)}
-nav button.on .ic{filter:none;opacity:1;transform:translateY(-2px)}
-.page{display:none;animation:fade .25s}.page.on{display:block}
-@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-/* prayer */
-.next{border-radius:22px;padding:18px;background:linear-gradient(135deg,#0d8f68,#2fd39a);display:flex;justify-content:space-between;align-items:center}
-.next .big{font-size:30px;font-weight:800;letter-spacing:-.5px}
-.next small{opacity:.85;font-weight:700;font-size:13px}
+nav button.on .ic{filter:none;opacity:1;transform:translateY(-2px) scale(1.12)}
+.page{display:none}.page.on{display:block;animation:slide .4s cubic-bezier(.2,1,.4,1)}
+@keyframes slide{from{opacity:0;transform:translateX(var(--dir,20px))}to{opacity:1;transform:none}}
+
+/* ibodat */
+.next{border-radius:24px;padding:18px;background:linear-gradient(120deg,#0a8a63,#1fc48b,#2fe0a8,#1fc48b);background-size:300% 100%;animation:grad 10s ease infinite;display:flex;justify-content:space-between;align-items:center;color:#fff;box-shadow:0 14px 30px -14px #1fc48b99}
+.next .big{font-size:32px;font-weight:800;letter-spacing:-.5px}
+.next small{opacity:.9;font-weight:800;font-size:13px}
+.next .moon{font-size:46px;animation:float2 4s ease-in-out infinite}
+@keyframes float2{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .pt{font-variant-numeric:tabular-nums;font-weight:800;font-size:15px;color:var(--muted)}
-.item.now{border-color:var(--ibodat);box-shadow:0 0 0 1px var(--ibodat) inset}
+.item.now{border-color:var(--ibodat);box-shadow:0 0 0 1px var(--ibodat) inset,var(--shadow)}
 .grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
-.grid7 .d{font-size:11px;color:var(--muted);font-weight:700}
-.dot{aspect-ratio:1;border-radius:10px;background:var(--card2);display:grid;place-items:center;font-size:11px;font-weight:800}
+.grid7 .d{font-size:11px;color:var(--muted);font-weight:800;margin-bottom:4px}
+.dot{aspect-ratio:1;border-radius:11px;background:var(--card2);display:grid;place-items:center;font-size:12px;font-weight:800}
 .stepper{display:flex;align-items:center;gap:8px}
 .stepper b{min-width:28px;text-align:center;font-size:17px}
-/* sport */
+
+.rk{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.rk span{font-size:11px;font-weight:800;padding:2px 7px;border-radius:8px;background:var(--card2);color:var(--muted)}
+.rk span.f{background:#1fc48b22;color:var(--ibodat)}
+.rk span.v{background:#a06bff22;color:var(--kitob)}
+/* yugurish */
+.runhero{border-radius:26px;padding:18px;color:#fff;background:linear-gradient(120deg,#ff5f2e,#ff8a3d,#ffb347,#ff8a3d);background-size:300% 100%;animation:grad 10s ease infinite;box-shadow:0 14px 34px -14px #ff7a2f99;position:relative;overflow:hidden}
+.runhero .runner{position:absolute;right:14px;top:12px;font-size:44px;animation:run 1.2s ease-in-out infinite}
+@keyframes run{0%,100%{transform:translateX(0) rotate(-4deg)}50%{transform:translateX(-8px) rotate(4deg)}}
+.runhero .km{font-size:40px;font-weight:800;letter-spacing:-1px}
+.runhero .km small{font-size:16px;opacity:.85}
+.runhero .lbl{font-size:13px;font-weight:800;opacity:.9}
+.track{height:12px;background:#ffffff3a;border-radius:99px;margin-top:12px;overflow:hidden;position:relative}
+.track i{display:block;height:100%;width:0;background:#fff;border-radius:99px;transition:width 1s cubic-bezier(.2,1,.3,1)}
+.goal-row{display:flex;justify-content:space-between;margin-top:8px;font-size:12px;font-weight:800;opacity:.95}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 8px;text-align:center;box-shadow:var(--shadow)}
+.stat b{display:block;font-size:20px;font-weight:800}
+.stat span{font-size:11px;color:var(--muted);font-weight:800}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 0;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
-.day.plan{color:var(--text);border-color:#ff8a3d66}
-.day.ok{background:var(--sport);color:#fff;border-color:transparent}
+.day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:8px 0 6px;text-align:center;font-size:11px;font-weight:800;color:var(--muted);position:relative;overflow:hidden;height:88px;display:flex;flex-direction:column;justify-content:flex-end}
+.day .fill{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(0deg,#ff7a2f,#ffb347);transition:height .8s cubic-bezier(.2,1,.3,1);height:0;opacity:.9}
+.day span{position:relative;z-index:1}
+.day .v{font-size:12px;color:var(--text)}
+.day.plan{border-color:#ff7a2f77}
 .day.today{outline:2px solid var(--text);outline-offset:1px}
-.day i{display:block;font-style:normal;font-size:16px;margin-top:4px}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
-.stat b{display:block;font-size:24px;font-weight:800}
-.stat span{font-size:11px;color:var(--muted);font-weight:700}
-/* books */
+.day.has .v,.day.has span{color:#fff}
+.plan-card{display:flex;gap:14px;align-items:center}
+.plan-card .em{width:54px;height:54px;border-radius:18px;background:#ff7a2f22;display:grid;place-items:center;font-size:28px;flex:none}
+.tips{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.tips li{font-size:13px;color:var(--muted);font-weight:600;display:flex;gap:8px}
+.pace{font-size:13px;font-weight:800;color:var(--sport);text-align:center;min-height:18px}
+
+/* kitob */
 .bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:8px}
-.bar i{display:block;height:100%;background:var(--kitob);border-radius:99px;transition:.3s}
-.cover{width:44px;height:60px;border-radius:8px;flex:none;display:grid;place-items:center;font-size:20px;font-weight:800;color:#fff}
+.bar i{display:block;height:100%;background:var(--kitob);border-radius:99px;transition:width .8s cubic-bezier(.2,1,.3,1)}
+.cover{width:44px;height:60px;border-radius:9px;flex:none;display:grid;place-items:center;font-size:20px;font-weight:800;color:#fff;box-shadow:inset -4px 0 0 #0002}
 .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
-.seg button{flex:1;border:0;background:none;padding:9px 0;border-radius:10px;font-weight:800;font-size:13px;color:var(--muted);cursor:pointer}
+.seg button{flex:1;border:0;background:none;padding:9px 0;border-radius:10px;font-weight:800;font-size:13px;color:var(--muted);cursor:pointer;transition:.2s}
 .seg button.on{background:var(--card2);color:var(--text)}
+
 /* sheet */
-.sheet-bg{position:fixed;inset:0;background:#0009;z-index:20;display:none;align-items:flex-end;justify-content:center}
-.sheet-bg.on{display:flex}
-.sheet{width:100%;max-width:560px;background:var(--card);border-radius:26px 26px 0 0;padding:10px 18px calc(22px + var(--safe-b));animation:up .25s;max-height:88vh;overflow:auto}
-@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.sheet-bg{position:fixed;inset:0;background:#0008;z-index:20;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.sheet-bg.on{display:flex;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}}
+.sheet{width:100%;max-width:560px;background:var(--sheet);border-radius:28px 28px 0 0;padding:10px 18px calc(22px + var(--safe-b));animation:up .35s cubic-bezier(.2,1.2,.4,1);max-height:88vh;overflow:auto}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
 .grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
 .sheet h3{margin:0 0 12px;font-size:19px}
-.note{font-size:13px;color:var(--muted);line-height:1.5}
-.toast{position:fixed;left:50%;bottom:calc(100px + var(--safe-b));transform:translateX(-50%) translateY(20px);background:#fff;color:#111;padding:11px 18px;border-radius:99px;font-weight:800;font-size:14px;opacity:0;transition:.25s;z-index:30;pointer-events:none;white-space:nowrap}
+.note{font-size:13px;color:var(--muted);line-height:1.5;font-weight:600}
+.toast{position:fixed;left:50%;bottom:calc(104px + var(--safe-b));transform:translateX(-50%) translateY(20px) scale(.9);background:var(--text);color:var(--bg);padding:11px 18px;border-radius:99px;font-weight:800;font-size:14px;opacity:0;transition:.3s cubic-bezier(.2,1.4,.4,1);z-index:30;pointer-events:none;white-space:nowrap}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .datebar{display:flex;align-items:center;gap:8px}
 .datebar .lbl{flex:1;text-align:center;font-weight:800}
-a.link{color:var(--ish);font-weight:700;text-decoration:none}
 .install{margin-top:14px;display:none}
 .mt{margin-top:10px}
+
+/* kirish ekrani */
+#splash{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;
+  background:linear-gradient(140deg,#3b2fd1,#7b3df0,#c04dff);color:#fff;transition:opacity .6s,transform .6s}
+#splash.hide{opacity:0;transform:scale(1.08);pointer-events:none}
+#splash .logo{width:84px;height:84px;border-radius:26px;background:#ffffff26;display:grid;place-items:center;font-size:42px;animation:bounceIn .8s cubic-bezier(.2,1.6,.4,1)}
+@keyframes bounceIn{from{transform:scale(0) rotate(-30deg)}to{transform:none}}
+#splash h1{margin:0;font-size:26px;animation:pop .6s .15s both}
+#splash p{margin:0;max-width:330px;font-size:15px;line-height:1.55;opacity:.92;font-weight:600;animation:pop .6s .3s both}
+#splash small{opacity:.7;font-weight:700;animation:pop .6s .45s both}
+/* konfetti */
+.cf{position:fixed;width:9px;height:14px;top:-20px;z-index:40;border-radius:3px;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translate(var(--x),110vh) rotate(var(--r));opacity:.9}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
+<div class="blobs"><i></i><i></i><i></i></div>
+<div id="splash"><div class="logo">✓</div><h1 id="spH">Xayrli kun, Abrorbek!</h1><p id="spQ"></p><small>Bosing yoki biroz kuting</small></div>
+
 <div class="wrap">
   <header>
-    <div class="hello" id="hello">Assalomu alaykum, Abrorbek</div>
-    <div class="title" id="pageTitle">Bugun</div>
+    <div><div class="hello" id="hello">Assalomu alaykum, Abrorbek</div><div class="title" id="pageTitle">Bugun</div></div>
+    <button class="theme-btn" id="themeBtn" aria-label="Mavzu"><span id="themeIc">🌓</span><small id="themeLb">AVTO</small></button>
   </header>
 
   <!-- ===== BUGUN ===== -->
   <section class="page on" id="p-ish">
     <div class="hero">
-      <div class="ring"><svg width="78" height="78"><circle cx="39" cy="39" r="32" stroke="#ffffff33" stroke-width="9" fill="none"/><circle id="ringC" cx="39" cy="39" r="32" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:.5s"/></svg><b id="ringT">0%</b></div>
-      <div>
+      <div class="ring"><svg width="80" height="80"><circle cx="40" cy="40" r="33" stroke="#ffffff33" stroke-width="9" fill="none"/><circle id="ringC" cx="40" cy="40" r="33" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="207" stroke-dashoffset="207" style="transition:stroke-dashoffset 1.2s cubic-bezier(.2,1,.3,1)"/></svg><b id="ringT">0%</b></div>
+      <div style="position:relative;z-index:1">
         <h3 id="heroH">Kun boshlandi</h3>
         <p id="heroP">Bugungi rejangizni tuzing.</p>
         <div class="chips" id="heroChips"></div>
       </div>
     </div>
+    <div class="quote pop"><b>💡</b><span id="quoteT"></span></div>
     <div class="card install" id="installCard">
       <div class="t">📲 Ilova qilib o'rnating</div>
-      <div class="note mt">Safari'da pastdagi <b>Ulashish</b> (□↑) tugmasini bosing → <b>"Ekranga qo'shish"</b>. Shunda Reja alohida ilova bo'lib ochiladi.</div>
+      <div class="note mt">Safari'da pastdagi <b>Ulashish</b> (□↑) tugmasini bosing → <b>"Ekranga qo'shish"</b>.</div>
     </div>
     <h2>Yangi ish <small id="dateLbl"></small></h2>
     <div class="card add">
@@ -148,7 +236,7 @@ a.link{color:var(--ish);font-weight:700;text-decoration:none}
         <div class="toggle" id="urgentT">⏰ Muhim</div>
         <button class="btn" id="addTask" style="flex:1">Qo'shish</button>
       </div>
-      <div class="note" id="urgentNote" style="display:none">Muhim ish vaqti bilan saqlanadi → keyin ⏰ tugmasi orqali iPhone kalendaringizga budilnik qo'shasiz.</div>
+      <div class="note" id="urgentNote" style="display:none">Muhim ish → ⏰ orqali iPhone kalendariga budilnik qo'shasiz.</div>
     </div>
     <div class="datebar mt">
       <button class="icon-btn" id="prevD">‹</button><div class="lbl" id="dayLbl"></div><button class="icon-btn" id="nextD">›</button>
@@ -156,27 +244,48 @@ a.link{color:var(--ish);font-weight:700;text-decoration:none}
     <div class="list mt" id="tasks"></div>
   </section>
 
-  <!-- ===== SPORT ===== -->
+  <!-- ===== YUGURISH ===== -->
   <section class="page" id="p-sport">
+    <div class="runhero">
+      <div class="runner">🏃‍♂️</div>
+      <div class="lbl">Bu hafta yugurdingiz</div>
+      <div class="km"><span id="wKm">0</span> <small>km</small></div>
+      <div class="track"><i id="wTrack"></i></div>
+      <div class="goal-row"><span id="wLeft"></span><span id="goalBtn" style="cursor:pointer;text-decoration:underline">Maqsad: <b id="wGoal">10</b> km ✎</span></div>
+    </div>
     <div class="stats">
-      <div class="stat"><b id="sWeek">0/3</b><span>Bu hafta</span></div>
+      <div class="stat"><b id="sTotal">0</b><span>Jami km</span></div>
       <div class="stat"><b id="sStreak">0</b><span>Hafta ketma-ket</span></div>
-      <div class="stat"><b id="sTotal">0</b><span>Jami mashg'ulot</span></div>
+      <div class="stat"><b id="sPace">—</b><span>Eng tez temp</span></div>
     </div>
     <h2>Bu hafta <small>Du · Chor · Juma — 19:00</small></h2>
     <div class="week" id="week"></div>
-    <h2>Bugungi mashg'ulot <small id="wName"></small></h2>
-    <div class="list" id="workout"></div>
-    <button class="btn mt" id="sportDone" style="--c:var(--sport);width:100%">✅ Mashg'ulot tugadi</button>
+    <h2>Bugungi reja <small id="planDay"></small></h2>
+    <div class="card">
+      <div class="plan-card"><div class="em" id="planEm">🏃</div><div class="grow"><div class="t" id="planT"></div><div class="s" id="planS"></div></div></div>
+      <ul class="tips" id="planTips"></ul>
+    </div>
+    <h2>Yugurishni yozish</h2>
+    <div class="card add">
+      <div class="row">
+        <input class="in" id="runKm" type="number" inputmode="decimal" step="0.1" min="0" placeholder="Masofa (km)">
+        <input class="in" id="runMin" type="number" inputmode="numeric" min="0" placeholder="Vaqt (daqiqa)">
+      </div>
+      <div class="pace" id="paceLive"></div>
+      <button class="btn" id="runSave" style="--c:var(--sport)">🏁 Saqlash</button>
+    </div>
+    <h2>Oxirgi yugurishlar <small id="runCount"></small></h2>
+    <div class="list" id="runs"></div>
   </section>
 
   <!-- ===== IBODAT ===== -->
   <section class="page" id="p-ibodat">
     <div class="next">
       <div><small id="nextName">Keyingi namoz</small><div class="big" id="nextTime">--:--</div><small id="nextLeft"></small></div>
-      <div style="font-size:44px">🕌</div>
+      <div class="moon">🕌</div>
     </div>
     <h2>Namozlar <small id="namozCount">0/5</small></h2>
+    <div class="note" style="margin:-4px 0 10px">Rakatlar Hanafiy mazhabi bo'yicha · <span style="color:var(--ibodat)">farz</span> · sunnat · <span style="color:var(--kitob)">vitr</span></div>
     <div class="list" id="namozList"></div>
     <h2>Qur'on va zikr</h2>
     <div class="list">
@@ -189,7 +298,7 @@ a.link{color:var(--ish);font-weight:700;text-decoration:none}
     <div class="card"><div class="grid7" id="hist7"></div></div>
     <div class="card mt">
       <div class="t">🔔 Namoz eslatmalari</div>
-      <div class="note mt">Har bir namoz vaqtida iPhone'ingiz eslatsin desangiz, Toshkent vaqtlari bo'yicha 90 kunlik kalendarni qo'shing.</div>
+      <div class="note mt">Har namoz vaqtida iPhone eslatsin desangiz, Toshkent vaqtlari bo'yicha 90 kunlik kalendarni qo'shing.</div>
       <a class="btn mt" style="--c:var(--ibodat);display:flex;align-items:center;justify-content:center;text-decoration:none" href="namoz-vaqtlari-toshkent.ics">Kalendarga qo'shish</a>
     </div>
   </section>
@@ -204,9 +313,9 @@ a.link{color:var(--ish);font-weight:700;text-decoration:none}
   </section>
 </div>
 
-<nav><div class="in-nav">
+<nav><div class="in-nav"><div class="pill" id="pill"></div>
   <button class="on" data-p="ish"><span class="ic">✅</span>Bugun</button>
-  <button data-p="sport"><span class="ic">🏋️</span>Sport</button>
+  <button data-p="sport"><span class="ic">🏃</span>Yugurish</button>
   <button data-p="ibodat"><span class="ic">🕌</span>Ibodat</button>
   <button data-p="kitob"><span class="ic">📚</span>Kitoblar</button>
 </div></nav>
@@ -219,76 +328,113 @@ a.link{color:var(--ish);font-weight:700;text-decoration:none}
 (function(){
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const KEY='reja-v1';
-const OFF=5*3600e3; // Toshkent vaqti
-const nowT=()=>new Date(Date.now()+OFF);           // UTC-maydonlari = Toshkent vaqti
+const OFF=5*3600e3;
+const nowT=()=>new Date(Date.now()+OFF);
 const keyOf=d=>d.toISOString().slice(0,10);
 const today=()=>keyOf(nowT());
 const addDays=(k,n)=>{const d=new Date(k+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return keyOf(d)};
-const dow=k=>new Date(k+'T00:00:00Z').getUTCDay(); // 0=Yak
+const dow=k=>new Date(k+'T00:00:00Z').getUTCDay();
 const OYLAR=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
 const KUNLAR=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
 const QK=['Ya','Du','Se','Ch','Pa','Ju','Sh'];
 const human=k=>{const d=new Date(k+'T00:00:00Z');return d.getUTCDate()+'-'+OYLAR[d.getUTCMonth()]};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const uid=()=>Math.random().toString(36).slice(2,10);
+const mins=s=>{const[h,m]=s.split(':');return h*60+ +m};
+const curMin=()=>{const n=nowT();return n.getUTCHours()*60+n.getUTCMinutes()};
 
 let S;
 try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
-if(!S) S={tasks:[],sport:{},ibodat:{},books:[]};
+if(!S) S={};
+S.tasks=S.tasks||[];S.ibodat=S.ibodat||{};S.books=S.books||[];S.runs=S.runs||[];S.goal=S.goal||10;
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 
-function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1900)}
+function vib(){try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}}
+function confetti(n=60){
+  const cols=['#5b8cff','#ff7a2f','#1fc48b','#a06bff','#ffd23d','#ff4f6a'];
+  for(let i=0;i<n;i++){const c=document.createElement('i');c.className='cf';
+    c.style.left=Math.random()*100+'vw';c.style.background=cols[i%cols.length];
+    c.style.setProperty('--x',(Math.random()*200-100)+'px');c.style.setProperty('--r',(Math.random()*720-360)+'deg');
+    c.style.animationDuration=(1.6+Math.random()*1.4)+'s';c.style.animationDelay=(Math.random()*.3)+'s';
+    document.body.appendChild(c);setTimeout(()=>c.remove(),3500)}
+}
+document.addEventListener('pointerdown',e=>{const b=e.target.closest('.btn');if(!b)return;const r=b.getBoundingClientRect(),s=Math.max(r.width,r.height);
+  const sp=document.createElement('span');sp.className='rip';sp.style.width=sp.style.height=s+'px';sp.style.left=(e.clientX-r.left-s/2)+'px';sp.style.top=(e.clientY-r.top-s/2)+'px';b.appendChild(sp);setTimeout(()=>sp.remove(),600)});
 
-/* ---------- navigation ---------- */
-const TITLES={ish:'Bugun',sport:'Sport',ibodat:'Ibodat',kitob:'Kitoblar'};
-function go(p){
+/* ---------- motivatsiya ---------- */
+const QUOTES=['Kichik qadam har kuni — katta natija bir yilda.','Marketolog sifatida bugun bitta yangi narsani sinab ko\'ring: yangi sarlavha, yangi auditoriya, yangi format.','Intizom — motivatsiya tugagan joydan boshlanadi.','Mijozning muammosini sizdan yaxshi tushunadigan odam yutadi.','Bugungi eng muhim 3 ta ishni bajaring — qolgani bonus.','Yugurish ham, karyera ham — temp emas, barqarorlik muhim.','Har bir kampaniya — tajriba. Raqamlarni yozib boring.','O\'qigan kitobingiz — eng yaxshi investitsiya.','Shoshilmang, lekin to\'xtamang.','Natija — har kuni takrorlangan odatlar yig\'indisi.','Bitta yaxshi taklif (offer) o\'nta reklamadan kuchliroq.','Namoz — kunning eng yaxshi tanaffusi.'];
+const qIdx=Math.floor(Date.now()/864e5)%QUOTES.length;
+$('#quoteT').textContent=QUOTES[qIdx];
+
+/* ---------- mavzu (kun/tun) ---------- */
+const TH={auto:['🌓','AVTO'],light:['☀️','KUN'],dark:['🌙','TUN']};
+let themeMode='auto';try{themeMode=localStorage.getItem('reja-theme')||'auto'}catch(e){}
+function isDay(){const T=(window.NAMOZ||{})[today()];const c=curMin();
+  if(T) return c>=mins(T[5])&&c<mins(T[3]); return c>=390&&c<1050;}   // quyosh chiqishidan shomgacha
+function applyTheme(){const t=themeMode==='auto'?(isDay()?'light':'dark'):themeMode;
+  document.documentElement.dataset.theme=t;$('#themeColor').content=t==='light'?'#f3f4fb':'#0d0e1c';
+  $('#themeIc').textContent=TH[themeMode][0];$('#themeLb').textContent=TH[themeMode][1];}
+$('#themeBtn').onclick=()=>{themeMode=themeMode==='auto'?'light':themeMode==='light'?'dark':'auto';
+  try{localStorage.setItem('reja-theme',themeMode)}catch(e){}
+  const b=$('#themeBtn');b.classList.remove('spin');void b.offsetWidth;b.classList.add('spin');applyTheme();vib();
+  toast(themeMode==='auto'?'Avto: kunduzi oq, kechasi tun 🌓':themeMode==='light'?'Kun rejimi ☀️':'Tun rejimi 🌙')};
+
+/* ---------- navigatsiya ---------- */
+const ORDER=['ish','sport','ibodat','kitob'];
+const TITLES={ish:'Bugun',sport:'Yugurish',ibodat:'Ibodat',kitob:'Kitoblar'};
+let curPage='ish';
+function go(p,silent){
+  const dir=ORDER.indexOf(p)>=ORDER.indexOf(curPage)?'24px':'-24px';curPage=p;
   $$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
-  $$('.page').forEach(s=>s.classList.toggle('on',s.id==='p-'+p));
-  $('#pageTitle').textContent=TITLES[p]; window.scrollTo(0,0);
+  $('#pill').style.transform=`translateX(${ORDER.indexOf(p)*100}%)`;
+  $$('.page').forEach(s=>{const on=s.id==='p-'+p;s.classList.toggle('on',on);if(on)s.style.setProperty('--dir',dir)});
+  $('#pageTitle').textContent=TITLES[p]; if(!silent){window.scrollTo(0,0);vib()}
+  ({ish:renderTasks,sport:renderSport,ibodat:renderIbodat,kitob:renderBooks})[p]();
   try{localStorage.setItem(KEY+'-tab',p)}catch(e){}
 }
 $$('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 
-/* ---------- greeting ---------- */
-function greet(){const h=nowT().getUTCHours();
-  $('#hello').textContent=(h<11?'Xayrli tong':h<17?'Xayrli kun':'Xayrli kech')+', Abrorbek 👋';}
+function greetWord(){const h=nowT().getUTCHours();return h<5?'Xayrli tun':h<11?'Xayrli tong':h<17?'Xayrli kun':'Xayrli kech'}
+function greet(){$('#hello').textContent=greetWord()+', Abrorbek 👋'}
 
-/* ---------- TASKS ---------- */
+/* ---------- ISHLAR ---------- */
 let viewDay=today(), urgent=false;
-$('#urgentT').onclick=()=>{urgent=!urgent;$('#urgentT').classList.toggle('on',urgent);$('#urgentNote').style.display=urgent?'block':'none'};
+$('#urgentT').onclick=()=>{urgent=!urgent;$('#urgentT').classList.toggle('on',urgent);$('#urgentNote').style.display=urgent?'block':'none';vib()};
 $('#addTask').onclick=addTask;
 $('#taskIn').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
 function addTask(){
   const t=$('#taskIn').value.trim(); if(!t){$('#taskIn').focus();return}
   const time=$('#taskTime').value||'';
   if(urgent&&!time){toast('Muhim ish uchun vaqt kiriting ⏰');$('#taskTime').focus();return}
-  S.tasks.push({id:uid(),title:t,time,urgent,done:false,date:viewDay});
-  save(); $('#taskIn').value='';$('#taskTime').value='';
-  if(urgent){urgent=false;$('#urgentT').classList.remove('on');$('#urgentNote').style.display='none';
-    const task=S.tasks[S.tasks.length-1]; renderTasks(); alarmSheet(task); return}
-  renderTasks(); toast('Qo\'shildi ✓');
+  const task={id:uid(),title:t,time,urgent,done:false,date:viewDay};
+  S.tasks.push(task); save(); $('#taskIn').value='';$('#taskTime').value='';vib();
+  if(urgent){urgent=false;$('#urgentT').classList.remove('on');$('#urgentNote').style.display='none';renderTasks(task.id);alarmSheet(task);return}
+  renderTasks(task.id); toast('Qo\'shildi ✓');
 }
 $('#prevD').onclick=()=>{viewDay=addDays(viewDay,-1);renderTasks()};
 $('#nextD').onclick=()=>{viewDay=addDays(viewDay,1);renderTasks()};
-function renderTasks(){
+function renderTasks(newId){
   const k=today();
   $('#dayLbl').textContent=viewDay===k?'Bugun, '+human(viewDay):viewDay===addDays(k,1)?'Ertaga, '+human(viewDay):viewDay===addDays(k,-1)?'Kecha, '+human(viewDay):KUNLAR[dow(viewDay)]+', '+human(viewDay);
   $('#dateLbl').textContent=human(viewDay)+' uchun';
   const list=S.tasks.filter(t=>t.date===viewDay).sort((a,b)=>(a.done-b.done)||(b.urgent-a.urgent)||((a.time||'99')<(b.time||'99')?-1:1));
   const el=$('#tasks');
-  if(!list.length){el.innerHTML='<div class="card empty"><div class="e">🗒️</div>Bu kunga ish yo\'q.<br>Eng muhim 3 ta ishdan boshlang.</div>';}
-  else el.innerHTML=list.map(t=>`<div class="item ${t.done?'done':''}" data-id="${t.id}">
+  if(!list.length){el.innerHTML='<div class="card empty pop"><div class="e">🗒️</div><br>Bu kunga ish yo\'q.<br>Eng muhim 3 ta ishdan boshlang.</div>';}
+  else el.innerHTML=list.map((t,i)=>`<div class="item pop ${t.done?'done':''}" style="--i:${newId&&t.id!==newId?0:i}" data-id="${t.id}">
     <button class="check ${t.done?'on':''}" data-a="tog"></button>
     <div class="grow"><div class="t">${esc(t.title)}</div>
       <div class="s">${t.time?'🕒 '+t.time:''}${t.urgent?'<span class="tag">MUHIM</span>':''}</div></div>
-    ${t.urgent&&t.time?'<button class="icon-btn" data-a="alarm" title="Budilnik">⏰</button>':''}
+    ${t.urgent&&t.time?'<button class="icon-btn" data-a="alarm">⏰</button>':''}
     <button class="icon-btn" data-a="more">⋯</button></div>`).join('');
   hero();
 }
 $('#tasks').onclick=e=>{
   const b=e.target.closest('[data-a]'); if(!b) return;
   const id=b.closest('.item').dataset.id, t=S.tasks.find(x=>x.id===id);
-  if(b.dataset.a==='tog'){t.done=!t.done;save();renderTasks();if(t.done)toast('Barakalla! ✓')}
+  if(b.dataset.a==='tog'){t.done=!t.done;save();vib();renderTasks();
+    if(t.done){const left=S.tasks.filter(x=>x.date===t.date&&!x.done).length;
+      if(!left){confetti(80);toast('Hamma ishlar bajarildi! 🏆')}else toast('Barakalla! ✓')}}
   if(b.dataset.a==='alarm') alarmSheet(t);
   if(b.dataset.a==='more') taskSheet(t);
 };
@@ -303,8 +449,6 @@ function taskSheet(t){
   if($('#al')) $('#al').onclick=()=>{closeSheet();alarmSheet(t)};
   $('#del').onclick=()=>{S.tasks=S.tasks.filter(x=>x!==t);save();closeSheet();renderTasks()};
 }
-
-/* ---- alarm via .ics (iPhone Calendar) ---- */
 function icsFor(t,before){
   const [h,m]=t.time.split(':').map(Number);
   const start=new Date(Date.parse(t.date+'T00:00:00Z')+(h*60+m)*60e3-OFF);
@@ -318,94 +462,135 @@ function alarmSheet(t){
    <div class="note">${human(t.date)}, soat <b>${t.time}</b>. Qachon eslatsin?</div>
    <div class="seg mt" id="bf"><button data-b="5">5 daq oldin</button><button class="on" data-b="15">15 daq</button><button data-b="60">1 soat</button></div>
    <a class="btn mt" id="icsA" style="display:flex;align-items:center;justify-content:center;text-decoration:none;--c:var(--danger)">iPhone kalendariga qo'shish</a>
-   <div class="note mt">Bosganingizdan so'ng <b>"Kalendarga qo'shish"</b> ni tanlang — iPhone belgilangan vaqtda va ish boshlanganda ovoz bilan eslatadi.</div>`);
+   <div class="note mt">Bosgandan so'ng <b>"Kalendarga qo'shish"</b> ni tanlang — iPhone o'z vaqtida ovoz bilan eslatadi.</div>`);
   let before=15;
   const upd=()=>{const blob=new Blob([icsFor(t,before)],{type:'text/calendar'});const a=$('#icsA');if(a._u)URL.revokeObjectURL(a._u);a._u=URL.createObjectURL(blob);a.href=a._u;a.download='budilnik.ics'};
   $('#bf').onclick=e=>{const b=e.target.closest('button');if(!b)return;before=+b.dataset.b;$$('#bf button').forEach(x=>x.classList.toggle('on',x===b));upd()};
   upd();
 }
 
-/* ---------- SPORT ---------- */
-const PLAN={1:['A: Ko\'krak va qo\'l',[['Isinish (joyida yugurish)','5 daq'],['Otjimaniya','4 × 12'],['Dips (stul bilan)','3 × 10'],['Plank','3 × 45 s'],['Cho\'zilish','5 daq']]],
- 3:['B: Oyoq va qorin',[['Isinish','5 daq'],['Prisedaniya','4 × 15'],['Vypad (har oyoqqa)','3 × 10'],['Press (krunch)','3 × 20'],['Cho\'zilish','5 daq']]],
- 5:['C: Butun tana',[['Isinish','5 daq'],['Burpi','4 × 10'],['Otjimaniya','3 × 15'],['Prisedaniya sakrash bilan','3 × 12'],['Velosiped (press)','3 × 20'],['Cho\'zilish','5 daq']]]};
+/* ---------- YUGURISH ---------- */
+const PLAN={
+  1:['🌤️','Yengil yugurish','3 km · sekin, gaplasha oladigan tempda',['5 daq tez yurish bilan isining','Nafas: 3 qadam — nafas olish, 2 qadam — chiqarish','Oxirida 5 daq cho\'zilish (son, boldir)']],
+  3:['⚡','Interval mashg\'ulot','1 daq tez + 2 daq sekin × 6 marta (~25 daq)',['Avval 5 daq sekin yugurib isining','Tez qismda 80% kuch bilan, to\'xtamang','Sekin qismda nafasni tiklang']],
+  5:['🏔️','Uzoq yugurish','5 km · bir xil sokin tempda',['Masofani har hafta 0.5 km oshiring','Oldin suv iching, ovqatdan 1.5 soat keyin','Tugatgach 5–7 daq cho\'zilish']]};
+const REST=['😌','Dam olish kuni','Mushaklar tiklanadi — bu ham mashg\'ulotning bir qismi',['20–30 daq piyoda yurish foydali','Ko\'p suv iching, yaxshi uxlang','Ertangi yugurish kiyimini tayyorlab qo\'ying']];
 const weekStart=k=>addDays(k,-((dow(k)+6)%7));
-function renderSport(){
+const fmtPace=p=>{if(!isFinite(p)||p<=0)return'—';const m=Math.floor(p),s=Math.round((p-m)*60);return m+':'+String(s===60?0:s).padStart(2,'0')};
+const kmDay=k=>S.runs.filter(r=>r.date===k).reduce((a,r)=>a+r.km,0);
+const r1=x=>Math.round(x*10)/10;
+function renderSport(newId){
   const k=today(), ws=weekStart(k);
-  let html='',cnt=0;
-  for(let i=0;i<7;i++){const d=addDays(ws,i),w=dow(d),plan=!!PLAN[w],ok=!!S.sport[d];if(ok)cnt++;
-    html+=`<div class="day ${plan?'plan':''} ${ok?'ok':''} ${d===k?'today':''}">${QK[w]}<i>${ok?'✓':plan?'🏋️':'·'}</i></div>`}
-  $('#week').innerHTML=html;
-  $('#sWeek').textContent=cnt+'/3';
-  $('#sTotal').textContent=Object.keys(S.sport).length;
-  let st=0,w=ws; if(cnt<3) w=addDays(ws,-7);
-  for(;;){let c=0;for(let i=0;i<7;i++)if(S.sport[addDays(w,i)])c++; if(c>=3){st++;w=addDays(w,-7)}else break;}
+  let wk=0,h='';const days=[];
+  for(let i=0;i<7;i++){const d=addDays(ws,i);days.push([d,kmDay(d)]);wk+=kmDay(d)}
+  const mx=Math.max(5,...days.map(x=>x[1]));
+  $('#week').innerHTML=days.map(([d,v])=>{const w=dow(d);return `<div class="day ${PLAN[w]?'plan':''} ${d===k?'today':''} ${v?'has':''}"><div class="fill" data-h="${v/mx*100}"></div><span class="v">${v?r1(v):PLAN[w]?'🏃':'·'}</span><span>${QK[w]}</span></div>`}).join('');
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#week .fill').forEach(f=>f.style.height=f.dataset.h+'%')));
+  // hero
+  animNum($('#wKm'),r1(wk),1);
+  $('#wGoal').textContent=S.goal;
+  const pr=Math.min(100,wk/S.goal*100);
+  requestAnimationFrame(()=>$('#wTrack').style.width=pr+'%');
+  $('#wLeft').textContent=wk>=S.goal?'Maqsad bajarildi! 🎉':'Yana '+r1(S.goal-wk)+' km';
+  // stats
+  const tot=S.runs.reduce((a,r)=>a+r.km,0); animNum($('#sTotal'),r1(tot),1);
+  const best=S.runs.filter(r=>r.km>=1&&r.min>0).map(r=>r.min/r.km); $('#sPace').textContent=best.length?fmtPace(Math.min(...best)):'—';
+  let st=0,w=ws; const runsIn=w0=>{let c=0;for(let i=0;i<7;i++)if(kmDay(addDays(w0,i))>0)c++;return c};
+  if(runsIn(ws)<3) w=addDays(ws,-7);
+  while(runsIn(w)>=3){st++;w=addDays(w,-7)}
   $('#sStreak').textContent=st;
-  const d=dow(k), p=PLAN[d]||PLAN[[1,3,5].find(x=>x>d)||1];
-  $('#wName').textContent=PLAN[d]?p[0]:'Keyingi: '+p[0];
-  $('#workout').innerHTML=p[1].map(([n,r])=>`<div class="item"><div class="grow"><div class="t">${n}</div></div><div class="pt" style="color:var(--sport)">${r}</div></div>`).join('');
-  const done=!!S.sport[k];
-  $('#sportDone').textContent=done?'✓ Bugun bajarildi (bekor qilish)':'✅ Mashg\'ulot tugadi';
-  $('#sportDone').classList.toggle('ghost',done);
+  // plan
+  const p=PLAN[dow(k)]||REST;
+  $('#planDay').textContent=KUNLAR[dow(k)];
+  $('#planEm').textContent=p[0];$('#planT').textContent=p[1];$('#planS').textContent=p[2];
+  $('#planTips').innerHTML=p[3].map(x=>`<li>✓ <span>${x}</span></li>`).join('');
+  // history
+  const rs=[...S.runs].sort((a,b)=>b.date.localeCompare(a.date)||b.ts-a.ts).slice(0,12);
+  $('#runCount').textContent=S.runs.length?S.runs.length+' ta':'';
+  $('#runs').innerHTML=rs.length?rs.map((r,i)=>`<div class="item pop" style="--i:${newId&&r.id!==newId?0:i}" data-r="${r.id}"><div class="cover" style="width:46px;height:46px;border-radius:15px;background:linear-gradient(160deg,#ff7a2f,#ffb347);font-size:15px">${r1(r.km)}</div>
+     <div class="grow"><div class="t">${r1(r.km)} km · ${r.min} daq</div><div class="s">${r.date===k?'Bugun':human(r.date)} · temp ${fmtPace(r.min/r.km)} /km</div></div>
+     <button class="icon-btn" data-a="del">🗑</button></div>`).join('')
+    :'<div class="card empty pop"><div class="e">👟</div><br>Hali yugurish yozilmagan.<br>Birinchi yugurishingizdan keyin shu yerga yozing!</div>';
+  hero();
 }
-$('#sportDone').onclick=()=>{const k=today();if(S.sport[k])delete S.sport[k];else{S.sport[k]=true;toast('Zo\'r! 💪')}save();renderSport();hero()};
+function animNum(el,to,dec,suf=''){const from=parseFloat(el.textContent)||0,t0=performance.now(),d=700;
+  const f=t=>{const p=Math.min(1,(t-t0)/d),e=1-Math.pow(1-p,3),v=from+(to-from)*e;el.textContent=(dec?(Math.round(v*10)/10):Math.round(v))+suf;if(p<1)requestAnimationFrame(f)};requestAnimationFrame(f)}
+const livePace=()=>{const km=parseFloat($('#runKm').value),mn=parseFloat($('#runMin').value);
+  $('#paceLive').textContent=km>0&&mn>0?`Temp: ${fmtPace(mn/km)} daq/km · tezlik ${r1(km/(mn/60))} km/soat`:''};
+$('#runKm').oninput=livePace;$('#runMin').oninput=livePace;
+$('#runSave').onclick=()=>{const km=parseFloat($('#runKm').value),mn=parseInt($('#runMin').value);
+  if(!(km>0)){toast('Masofani kiriting (km)');$('#runKm').focus();return}
+  if(!(mn>0)){toast('Vaqtni kiriting (daqiqa)');$('#runMin').focus();return}
+  const k=today(),ws=weekStart(k);let before=0;for(let i=0;i<7;i++)before+=kmDay(addDays(ws,i));
+  const r={id:uid(),date:k,km,min:mn,ts:Date.now()};S.runs.push(r);save();
+  $('#runKm').value='';$('#runMin').value='';$('#paceLive').textContent='';vib();
+  renderSport(r.id);
+  if(before<S.goal&&before+km>=S.goal){confetti(110);toast('Haftalik maqsad bajarildi! 🏆')}
+  else{confetti(40);toast('Zo\'r yugurish! 🏃‍♂️💨')}};
+$('#runs').onclick=e=>{const b=e.target.closest('[data-a=del]');if(!b)return;const id=b.closest('[data-r]').dataset.r;
+  S.runs=S.runs.filter(r=>r.id!==id);save();renderSport();toast('O\'chirildi')};
+$('#goalBtn').onclick=()=>{openSheet(`<h3>🎯 Haftalik maqsad</h3><div class="note">Haftasiga necha km yugurmoqchisiz? Boshlash uchun 10 km yaxshi, har 2 haftada 10% oshiring.</div>
+  <div class="seg mt" id="gs">${[6,8,10,12,15,20].map(g=>`<button data-g="${g}" class="${g===S.goal?'on':''}">${g}</button>`).join('')}</div>`);
+  $('#gs').onclick=e=>{const b=e.target.closest('button');if(!b)return;S.goal=+b.dataset.g;save();closeSheet();renderSport();toast('Maqsad: '+S.goal+' km')}};
 
 /* ---------- IBODAT ---------- */
 const NAM=[['fajr','Bomdod','🌄'],['dhuhr','Peshin','☀️'],['asr','Asr','🌤️'],['maghrib','Shom','🌇'],['isha','Xufton','🌙']];
+// Hanafiy mazhabi bo'yicha rakatlar: [son, tur] — s=sunnat, f=farz, v=vojib (vitr)
+const RAKAT={fajr:[[2,'s'],[2,'f']],dhuhr:[[4,'s'],[4,'f'],[2,'s']],asr:[[4,'f']],maghrib:[[3,'f'],[2,'s']],isha:[[4,'f'],[2,'s'],[3,'v']]};
+const JUMA=[[4,'s'],[2,'f'],[4,'s']];
+const RN={s:'sunnat',f:'farz',v:'vitr (vojib)'};
+const rakHtml=a=>'<div class="rk">'+a.map(([n,t])=>`<span class="${t==='s'?'':t}">${n} ${RN[t]}</span>`).join('')+'</div>';
 const ib=k=>S.ibodat[k]||(S.ibodat[k]={n:{},q:0,am:false,pm:false});
-const mins=s=>{const[h,m]=s.split(':');return h*60+ +m};
-function renderIbodat(){
-  const k=today(), T=(window.NAMOZ||{})[k], d=ib(k);
-  const nm=nowT(), cur=nm.getUTCHours()*60+nm.getUTCMinutes();
-  let curIdx=-1;
-  if(T){for(let i=0;i<5;i++) if(cur>=mins(T[i])) curIdx=i;}
-  $('#namozList').innerHTML=NAM.map(([id,n,e],i)=>`<div class="item ${d.n[id]?'done':''} ${i===curIdx&&!d.n[id]?'now':''}" data-n="${id}">
+function renderIbodat(anim=true){
+  const k=today(), T=(window.NAMOZ||{})[k], d=ib(k), cur=curMin();
+  let curIdx=-1; if(T){for(let i=0;i<5;i++) if(cur>=mins(T[i])) curIdx=i;}
+  $('#namozList').innerHTML=NAM.map(([id,n,e],i)=>`<div class="item ${anim?'pop':''} ${d.n[id]?'done':''} ${i===curIdx&&!d.n[id]?'now':''}" style="--i:${i}" data-n="${id}">
     <button class="check ${d.n[id]?'on':''}" style="--c:var(--ibodat)"></button>
-    <div class="grow"><div class="t">${e} ${n}</div><div class="s">${i===curIdx?'Hozirgi vaqt':''}</div></div>
+    <div class="grow"><div class="t">${e} ${id==='dhuhr'&&dow(k)===5?'Juma namozi':n}${i===curIdx?' <span class="tag" style="background:#1fc48b22;color:var(--ibodat)">HOZIR</span>':''}</div>${rakHtml(id==='dhuhr'&&dow(k)===5?JUMA:RAKAT[id])}</div>
     <div class="pt">${T?T[i]:'--:--'}</div></div>`).join('');
   const c=NAM.filter(([id])=>d.n[id]).length;
   $('#namozCount').textContent=c+'/5';
   $('#quranN').textContent=d.q;
   $('#zAM .check').classList.toggle('on',d.am);$('#zAM').classList.toggle('done',d.am);
   $('#zPM .check').classList.toggle('on',d.pm);$('#zPM').classList.toggle('done',d.pm);
-  // next prayer
   let nx=null;
   if(T){for(let i=0;i<5;i++) if(mins(T[i])>cur){nx=[NAM[i][1],T[i],mins(T[i])-cur];break}
     if(!nx){const T2=window.NAMOZ[addDays(k,1)]; if(T2) nx=[NAM[0][1]+' (ertaga)',T2[0],24*60-cur+mins(T2[0])];}}
   if(nx){$('#nextName').textContent='Keyingi: '+nx[0];$('#nextTime').textContent=nx[1];
     const h=Math.floor(nx[2]/60),m=nx[2]%60;$('#nextLeft').textContent=(h?h+' soat ':'')+m+' daqiqa qoldi';}
   else{$('#nextName').textContent='Namoz vaqtlari yangilanishi kerak';$('#nextTime').textContent='--:--';$('#nextLeft').textContent='';}
-  // 7 days
   let h='';for(let i=6;i>=0;i--){const dk=addDays(k,-i),x=S.ibodat[dk],n=x?Object.values(x.n).filter(Boolean).length:0;
-    const a=n/5; h+=`<div><div class="d">${QK[dow(dk)]}</div><div class="dot" style="background:${n?`rgba(47,211,154,${.2+.8*a})`:'var(--card2)'};${n===5?'color:#06301f':''}">${n}</div></div>`}
+    h+=`<div class="${anim?'pop':''}" style="--i:${6-i}"><div class="d">${QK[dow(dk)]}</div><div class="dot" style="background:${n?`rgba(31,196,139,${.2+.8*n/5})`:'var(--card2)'};${n>=4?'color:#fff':''}">${n}</div></div>`}
   $('#hist7').innerHTML=h;
 }
-$('#namozList').onclick=e=>{const it=e.target.closest('[data-n]');if(!it)return;const d=ib(today());d.n[it.dataset.n]=!d.n[it.dataset.n];save();renderIbodat();hero()};
-$$('[data-q]').forEach(b=>b.onclick=()=>{const d=ib(today());d.q=Math.max(0,d.q+ +b.dataset.q);save();renderIbodat();hero()});
-$('#zAM').onclick=()=>{const d=ib(today());d.am=!d.am;save();renderIbodat();hero()};
-$('#zPM').onclick=()=>{const d=ib(today());d.pm=!d.pm;save();renderIbodat();hero()};
+$('#namozList').onclick=e=>{const it=e.target.closest('[data-n]');if(!it)return;const d=ib(today());d.n[it.dataset.n]=!d.n[it.dataset.n];save();vib();renderIbodat(false);hero();
+  if(d.n[it.dataset.n]&&NAM.every(([id])=>d.n[id])){confetti(90);toast('5 vaqt namoz o\'qildi! 🤲')}};
+$$('[data-q]').forEach(b=>b.onclick=()=>{const d=ib(today());d.q=Math.max(0,d.q+ +b.dataset.q);save();vib();renderIbodat(false);hero();if(d.q===2&&+b.dataset.q>0)toast('Kunlik maqsad bajarildi 📖')});
+$('#zAM').onclick=()=>{const d=ib(today());d.am=!d.am;save();vib();renderIbodat(false);hero()};
+$('#zPM').onclick=()=>{const d=ib(today());d.pm=!d.pm;save();vib();renderIbodat(false);hero()};
 
 /* ---------- KITOBLAR ---------- */
 const RECS=[['$100M Offers','Alex Hormozi',150],['Influence (Ta\'sir psixologiyasi)','Robert Cialdini',320],['Building a StoryBrand','Donald Miller',240],['This Is Marketing','Seth Godin',270],['Atomic Habits','James Clear',320],['Ogilvy on Advertising','David Ogilvy',224]];
-const COLORS=['#5b8cff','#ff8a3d','#2fd39a','#b07cff','#ff5d73','#f5b83d'];
+const COLORS=['#5b8cff','#ff7a2f','#1fc48b','#a06bff','#ff4f6a','#f5b83d'];
 let bf='reading';
 $('#bookSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;bf=b.dataset.f;$$('#bookSeg button').forEach(x=>x.classList.toggle('on',x===b));renderBooks()};
 function renderBooks(){
   const list=S.books.filter(b=>b.status===bf);
-  $('#books').innerHTML=list.length?list.map(b=>{const p=b.pages?Math.min(100,Math.round(b.read/b.pages*100)):0;
+  $('#books').innerHTML=list.length?list.map((b,i)=>{const p=b.pages?Math.min(100,Math.round(b.read/b.pages*100)):0;
     const col=COLORS[b.title.length%COLORS.length];
-    return `<div class="item" data-b="${b.id}"><div class="cover" style="background:linear-gradient(160deg,${col},${col}88)">${esc(b.title[0]||'?')}</div>
+    return `<div class="item pop" style="--i:${i}" data-b="${b.id}"><div class="cover" style="background:linear-gradient(160deg,${col},${col}99)">${esc(b.title[0]||'?')}</div>
       <div class="grow"><div class="t">${esc(b.title)}</div><div class="s">${esc(b.author||'')}${b.pages?` · ${b.read}/${b.pages} bet`:''}</div>
-      ${b.status!=='todo'?`<div class="bar"><i style="width:${b.status==='done'?100:p}%"></i></div>`:''}</div>
+      ${b.status!=='todo'?`<div class="bar"><i style="width:0" data-w="${b.status==='done'?100:p}"></i></div>`:''}</div>
       <button class="icon-btn" data-a="edit">✎</button></div>`}).join('')
-    :`<div class="card empty"><div class="e">📚</div>${bf==='reading'?'Hozir o\'qiyotgan kitobingiz yo\'q.<br>Pastdagi tavsiyalardan boshlang.':bf==='todo'?'Navbatda kitob yo\'q.':'Hali tugatilgan kitob yo\'q.'}</div>`;
+    :`<div class="card empty pop"><div class="e">📚</div><br>${bf==='reading'?'Hozir o\'qiyotgan kitobingiz yo\'q.<br>Pastdagi tavsiyalardan boshlang.':bf==='todo'?'Navbatda kitob yo\'q.':'Hali tugatilgan kitob yo\'q.'}</div>`;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$$('#books .bar i').forEach(x=>x.style.width=x.dataset.w+'%')));
   const have=new Set(S.books.map(b=>b.title));
-  $('#recs').innerHTML=RECS.filter(r=>!have.has(r[0])).map((r,i)=>`<div class="item"><div class="cover" style="background:linear-gradient(160deg,${COLORS[i%6]},${COLORS[i%6]}88)">${r[0][0]==='$'?'$':r[0][0]}</div>
+  $('#recs').innerHTML=RECS.filter(r=>!have.has(r[0])).map((r,i)=>`<div class="item pop" style="--i:${i}"><div class="cover" style="background:linear-gradient(160deg,${COLORS[i%6]},${COLORS[i%6]}99)">${r[0][0]}</div>
     <div class="grow"><div class="t">${esc(r[0])}</div><div class="s">${r[1]} · ~${r[2]} bet</div></div>
     <button class="btn sm" style="--c:var(--kitob)" data-r="${esc(r[0])}">＋</button></div>`).join('')||'<div class="note">Hammasi ro\'yxatingizda 👏</div>';
 }
 $('#recs').onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;const r=RECS.find(x=>x[0]===b.dataset.r);
-  S.books.push({id:uid(),title:r[0],author:r[1],pages:r[2],read:0,status:'todo'});save();renderBooks();toast('Navbatga qo\'shildi')};
+  S.books.push({id:uid(),title:r[0],author:r[1],pages:r[2],read:0,status:'todo'});save();vib();renderBooks();toast('Navbatga qo\'shildi 📚')};
 $('#books').onclick=e=>{const it=e.target.closest('[data-b]');if(!it)return;bookSheet(S.books.find(b=>b.id===it.dataset.b))};
 $('#addBookBtn').onclick=()=>bookSheet(null);
 function bookSheet(b){
@@ -420,25 +605,26 @@ function bookSheet(b){
   let st=b.status; const ss=()=>$$('#bS button').forEach(x=>x.classList.toggle('on',x.dataset.s===st)); ss();
   $('#bS').onclick=e=>{const x=e.target.closest('button');if(x){st=x.dataset.s;ss()}};
   $('#bSave').onclick=()=>{const t=$('#bT').value.trim();if(!t){$('#bT').focus();return}
+    const wasDone=b.status==='done';
     Object.assign(b,{title:t,author:$('#bA').value.trim(),pages:+$('#bP').value||0,read:+$('#bR').value||0,status:st});
     if(st==='done'&&b.pages)b.read=b.pages; if(nb)S.books.push(b); save();closeSheet();bf=st;
     $$('#bookSeg button').forEach(x=>x.classList.toggle('on',x.dataset.f===st));renderBooks();hero();
-    if(st==='done')toast('Tabriklaymiz! 🎉')};
+    if(st==='done'&&!wasDone){confetti(100);toast('Kitob tugadi! Tabriklaymiz 🎉')}};
   if($('#bDel'))$('#bDel').onclick=()=>{S.books=S.books.filter(x=>x!==b);save();closeSheet();renderBooks()};
 }
 
-/* ---------- hero (kunlik natija) ---------- */
+/* ---------- kunlik natija ---------- */
 function hero(){
   const k=today(), tt=S.tasks.filter(t=>t.date===k), td=tt.filter(t=>t.done).length;
   const d=S.ibodat[k]||{n:{},q:0}, nc=Object.values(d.n||{}).filter(Boolean).length;
-  const sportDay=!!PLAN[dow(k)], sp=!!S.sport[k];
-  let parts=[]; if(tt.length)parts.push(td/tt.length); parts.push(nc/5); if(sportDay)parts.push(sp?1:0); parts.push(Math.min(1,(d.q||0)/2));
+  const runDay=!!PLAN[dow(k)], ran=kmDay(k)>0;
+  let parts=[]; if(tt.length)parts.push(td/tt.length); parts.push(nc/5); if(runDay||ran)parts.push(ran?1:0); parts.push(Math.min(1,(d.q||0)/2));
   const pct=Math.round(parts.reduce((a,b)=>a+b,0)/parts.length*100);
-  $('#ringC').style.strokeDashoffset=201-201*pct/100; $('#ringT').textContent=pct+'%';
+  $('#ringC').style.strokeDashoffset=207-207*pct/100; animNum($('#ringT'),pct,0,'%');
   $('#heroH').textContent=pct>=100?'Mukammal kun! 🏆':pct>=60?'Zo\'r ketyapsiz 🔥':pct>0?'Davom eting 💪':'Kun boshlandi ☀️';
   const left=tt.length-td;
   $('#heroP').textContent=tt.length?(left?`Yana ${left} ta ish qoldi.`:'Bugungi ishlar bajarildi!'):'Bugungi rejangizni tuzing.';
-  $('#heroChips').innerHTML=`<span class="chip">✅ ${td}/${tt.length}</span><span class="chip">🕌 ${nc}/5</span>${sportDay?`<span class="chip">🏋️ ${sp?'✓':'—'}</span>`:''}<span class="chip">📖 ${d.q||0} bet</span>`;
+  $('#heroChips').innerHTML=`<span class="chip">✅ ${td}/${tt.length}</span><span class="chip">🕌 ${nc}/5</span>${runDay||ran?`<span class="chip">🏃 ${ran?r1(kmDay(k))+' km':'—'}</span>`:''}<span class="chip">📖 ${d.q||0} bet</span>`;
 }
 
 /* ---------- sheet ---------- */
@@ -446,15 +632,21 @@ function openSheet(h){$('#sheetIn').innerHTML='<div class="grab"></div>'+h;$('#s
 function closeSheet(){$('#sheet').classList.remove('on')}
 $('#sheet').onclick=e=>{if(e.target.id==='sheet')closeSheet()};
 
-/* ---------- init ---------- */
+/* ---------- kirish ekrani ---------- */
+$('#spH').textContent=greetWord()+', Abrorbek!';
+$('#spQ').textContent=QUOTES[(qIdx+3)%QUOTES.length];
+const hideSplash=()=>$('#splash').classList.add('hide');
+$('#splash').onclick=hideSplash; setTimeout(hideSplash,1700);
+
+/* ---------- ishga tushirish ---------- */
 const standalone=window.navigator.standalone||matchMedia('(display-mode: standalone)').matches;
 if(!standalone&&/iPhone|iPad/.test(navigator.userAgent)) $('#installCard').style.display='block';
-function all(){greet();renderTasks();renderSport();renderIbodat();renderBooks();hero()}
-all();
+applyTheme();greet();
+let startTab='ish';try{const t=localStorage.getItem(KEY+'-tab');if(t&&TITLES[t])startTab=t}catch(e){}
+renderTasks();renderSport();renderIbodat();renderBooks();go(startTab,true);
 let last=today();
-setInterval(()=>{if(today()!==last){last=today();viewDay=last}renderIbodat();greet();hero()},30000);
-document.addEventListener('visibilitychange',()=>{if(!document.hidden)all()});
-try{const t=localStorage.getItem(KEY+'-tab');if(t&&TITLES[t])go(t)}catch(e){}
+setInterval(()=>{if(today()!==last){last=today();viewDay=last;renderTasks()}renderIbodat(false);greet();applyTheme();hero()},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden){applyTheme();greet();go(curPage,true)}});
 })();
 </script>
 </body>
