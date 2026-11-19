@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Reja">
+<meta name="theme-color" content="#0f1020">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<title>Reja</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1020;--card:#1a1b2e;--card2:#222440;--line:#2d2f4d;--text:#f2f3fa;--muted:#8d90b3;
+  --ish:#5b8cff;--sport:#ff8a3d;--ibodat:#2fd39a;--kitob:#b07cff;--danger:#ff5d73;
+  --safe-t:env(safe-area-inset-top);--safe-b:env(safe-area-inset-bottom);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,-apple-system,system-ui,sans-serif;}
+body{min-height:100vh;padding-bottom:calc(92px + var(--safe-b));overscroll-behavior:none}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:0 18px}
+header{padding:calc(18px + var(--safe-t)) 0 8px}
+.hello{color:var(--muted);font-size:14px;font-weight:600}
+.title{font-size:28px;font-weight:800;letter-spacing:-.5px;margin:2px 0 0}
+.hero{margin-top:16px;border-radius:24px;padding:18px;display:flex;align-items:center;gap:16px;
+  background:linear-gradient(135deg,#3b2fd1 0%,#6a3df0 50%,#a24dff 100%);box-shadow:0 12px 30px -10px #6a3df088}
+.ring{width:78px;height:78px;flex:none;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;font-weight:800}
+.hero h3{margin:0;font-size:17px}
+.hero p{margin:4px 0 0;font-size:13px;opacity:.85;line-height:1.4}
+.chips{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.chip{font-size:11px;font-weight:700;padding:4px 9px;border-radius:99px;background:#ffffff26}
+h2{font-size:18px;margin:24px 0 10px;display:flex;align-items:center;justify-content:space-between}
+h2 small{font-size:12px;color:var(--muted);font-weight:600}
+.card{background:var(--card);border-radius:20px;padding:14px;border:1px solid var(--line)}
+.list{display:flex;flex-direction:column;gap:8px}
+.item{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;transition:.2s}
+.item.done{opacity:.5}.item.done .t{text-decoration:line-through}
+.check{width:26px;height:26px;border-radius:9px;border:2px solid var(--line);flex:none;display:grid;place-items:center;cursor:pointer;background:none;padding:0;transition:.15s}
+.check.on{border-color:transparent;background:var(--c,var(--ish))}
+.check.on::after{content:"";width:10px;height:6px;border:3px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.grow{flex:1;min-width:0}
+.t{font-weight:700;font-size:15px;word-wrap:break-word}
+.s{color:var(--muted);font-size:12px;font-weight:600;margin-top:2px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{font-size:11px;font-weight:800;padding:2px 8px;border-radius:99px;background:#ff5d7322;color:var(--danger)}
+.icon-btn{background:var(--card2);border:0;border-radius:11px;width:34px;height:34px;display:grid;place-items:center;cursor:pointer;flex:none;font-size:15px}
+.empty{text-align:center;color:var(--muted);padding:26px 10px;font-size:14px;line-height:1.5}
+.empty .e{font-size:34px;margin-bottom:6px}
+/* add form */
+.add{display:flex;flex-direction:column;gap:10px}
+.in{width:100%;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:13px 14px;font-size:15px;outline:none}
+.in:focus{border-color:var(--ish)}
+.row{display:flex;gap:8px;align-items:center}
+.toggle{display:flex;align-items:center;gap:8px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:0 12px;height:48px;cursor:pointer;font-size:14px;font-weight:700;white-space:nowrap;user-select:none}
+.toggle.on{border-color:var(--danger);color:var(--danger);background:#ff5d7314}
+.btn{border:0;border-radius:14px;height:48px;padding:0 18px;font-weight:800;font-size:15px;cursor:pointer;background:var(--c,var(--ish));color:#fff}
+.btn.ghost{background:var(--card2);color:var(--text)}
+.btn.sm{height:36px;font-size:13px;border-radius:11px;padding:0 12px}
+input[type=time].in{width:auto;min-width:110px}
+/* tab bar */
+nav{position:fixed;left:0;right:0;bottom:0;padding:8px 10px calc(8px + var(--safe-b));background:#12132acc;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-top:1px solid var(--line);z-index:9}
+nav .in-nav{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr)}
+nav button{background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;color:var(--muted);font-size:11px;font-weight:700}
+nav button .ic{font-size:22px;filter:grayscale(1);opacity:.6;transition:.2s}
+nav button.on{color:var(--text)}
+nav button.on .ic{filter:none;opacity:1;transform:translateY(-2px)}
+.page{display:none;animation:fade .25s}.page.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+/* prayer */
+.next{border-radius:22px;padding:18px;background:linear-gradient(135deg,#0d8f68,#2fd39a);display:flex;justify-content:space-between;align-items:center}
+.next .big{font-size:30px;font-weight:800;letter-spacing:-.5px}
+.next small{opacity:.85;font-weight:700;font-size:13px}
+.pt{font-variant-numeric:tabular-nums;font-weight:800;font-size:15px;color:var(--muted)}
+.item.now{border-color:var(--ibodat);box-shadow:0 0 0 1px var(--ibodat) inset}
+.grid7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center}
+.grid7 .d{font-size:11px;color:var(--muted);font-weight:700}
+.dot{aspect-ratio:1;border-radius:10px;background:var(--card2);display:grid;place-items:center;font-size:11px;font-weight:800}
+.stepper{display:flex;align-items:center;gap:8px}
+.stepper b{min-width:28px;text-align:center;font-size:17px}
+/* sport */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 0;text-align:center;font-size:12px;font-weight:800;color:var(--muted)}
+.day.plan{color:var(--text);border-color:#ff8a3d66}
+.day.ok{background:var(--sport);color:#fff;border-color:transparent}
+.day.today{outline:2px solid var(--text);outline-offset:1px}
+.day i{display:block;font-style:normal;font-size:16px;margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;text-align:center}
+.stat b{display:block;font-size:24px;font-weight:800}
+.stat span{font-size:11px;color:var(--muted);font-weight:700}
+/* books */
+.bar{height:8px;background:var(--card2);border-radius:99px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--kitob);border-radius:99px;transition:.3s}
+.cover{width:44px;height:60px;border-radius:8px;flex:none;display:grid;place-items:center;font-size:20px;font-weight:800;color:#fff}
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;gap:4px}
+.seg button{flex:1;border:0;background:none;padding:9px 0;border-radius:10px;font-weight:800;font-size:13px;color:var(--muted);cursor:pointer}
+.seg button.on{background:var(--card2);color:var(--text)}
+/* sheet */
+.sheet-bg{position:fixed;inset:0;background:#0009;z-index:20;display:none;align-items:flex-end;justify-content:center}
+.sheet-bg.on{display:flex}
+.sheet{width:100%;max-width:560px;background:var(--card);border-radius:26px 26px 0 0;padding:10px 18px calc(22px + var(--safe-b));animation:up .25s;max-height:88vh;overflow:auto}
+@keyframes up{from{transform:translateY(40px);opacity:.4}to{transform:none;opacity:1}}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--line);margin:0 auto 14px}
+.sheet h3{margin:0 0 12px;font-size:19px}
+.note{font-size:13px;color:var(--muted);line-height:1.5}
+.toast{position:fixed;left:50%;bottom:calc(100px + var(--safe-b));transform:translateX(-50%) translateY(20px);background:#fff;color:#111;padding:11px 18px;border-radius:99px;font-weight:800;font-size:14px;opacity:0;transition:.25s;z-index:30;pointer-events:none;white-space:nowrap}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.datebar{display:flex;align-items:center;gap:8px}
+.datebar .lbl{flex:1;text-align:center;font-weight:800}
+a.link{color:var(--ish);font-weight:700;text-decoration:none}
+.install{margin-top:14px;display:none}
+.mt{margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="hello" id="hello">Assalomu alaykum, Abrorbek</div>
+    <div class="title" id="pageTitle">Bugun</div>
+  </header>
+
+  <!-- ===== BUGUN ===== -->
+  <section class="page on" id="p-ish">
+    <div class="hero">
+      <div class="ring"><svg width="78" height="78"><circle cx="39" cy="39" r="32" stroke="#ffffff33" stroke-width="9" fill="none"/><circle id="ringC" cx="39" cy="39" r="32" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round" stroke-dasharray="201" stroke-dashoffset="201" style="transition:.5s"/></svg><b id="ringT">0%</b></div>
+      <div>
+        <h3 id="heroH">Kun boshlandi</h3>
+        <p id="heroP">Bugungi rejangizni tuzing.</p>
+        <div class="chips" id="heroChips"></div>
+      </div>
+    </div>
+    <div class="card install" id="installCard">
+      <div class="t">📲 Ilova qilib o'rnating</div>
+      <div class="note mt">Safari'da pastdagi <b>Ulashish</b> (□↑) tugmasini bosing → <b>"Ekranga qo'shish"</b>. Shunda Reja alohida ilova bo'lib ochiladi.</div>
+    </div>
+    <h2>Yangi ish <small id="dateLbl"></small></h2>
+    <div class="card add">
+      <input class="in" id="taskIn" placeholder="Masalan: Colba uchun reklama kreativi" maxlength="120">
+      <div class="row">
+        <input class="in" type="time" id="taskTime">
+        <div class="toggle" id="urgentT">⏰ Muhim</div>
+        <button class="btn" id="addTask" style="flex:1">Qo'shish</button>
+      </div>
+      <div class="note" id="urgentNote" style="display:none">Muhim ish vaqti bilan saqlanadi → keyin ⏰ tugmasi orqali iPhone kalendaringizga budilnik qo'shasiz.</div>
+    </div>
+    <div class="datebar mt">
+      <button class="icon-btn" id="prevD">‹</button><div class="lbl" id="dayLbl"></div><button class="icon-btn" id="nextD">›</button>
+    </div>
+    <div class="list mt" id="tasks"></div>
+  </section>
+
+  <!-- ===== SPORT ===== -->
+  <section class="page" id="p-sport">
+    <div class="stats">
+      <div class="stat"><b id="sWeek">0/3</b><span>Bu hafta</span></div>
+      <div class="stat"><b id="sStreak">0</b><span>Hafta ketma-ket</span></div>
+      <div class="stat"><b id="sTotal">0</b><span>Jami mashg'ulot</span></div>
+    </div>
+    <h2>Bu hafta <small>Du · Chor · Juma — 19:00</small></h2>
+    <div class="week" id="week"></div>
+    <h2>Bugungi mashg'ulot <small id="wName"></small></h2>
+    <div class="list" id="workout"></div>
+    <button class="btn mt" id="sportDone" style="--c:var(--sport);width:100%">✅ Mashg'ulot tugadi</button>
+  </section>
+
+  <!-- ===== IBODAT ===== -->
+  <section class="page" id="p-ibodat">
+    <div class="next">
+      <div><small id="nextName">Keyingi namoz</small><div class="big" id="nextTime">--:--</div><small id="nextLeft"></small></div>
+      <div style="font-size:44px">🕌</div>
+    </div>
+    <h2>Namozlar <small id="namozCount">0/5</small></h2>
+    <div class="list" id="namozList"></div>
+    <h2>Qur'on va zikr</h2>
+    <div class="list">
+      <div class="item"><div style="font-size:22px">📖</div><div class="grow"><div class="t">Qur'on o'qish</div><div class="s">Kunlik maqsad: 2 bet</div></div>
+        <div class="stepper"><button class="icon-btn" data-q="-1">−</button><b id="quranN">0</b><button class="icon-btn" data-q="1">+</button></div></div>
+      <div class="item" id="zAM"><button class="check" style="--c:var(--ibodat)"></button><div class="grow"><div class="t">Ertalabki zikr</div><div class="s">Bomdoddan keyin</div></div><div>🌅</div></div>
+      <div class="item" id="zPM"><button class="check" style="--c:var(--ibodat)"></button><div class="grow"><div class="t">Kechki zikr</div><div class="s">Asrdan keyin</div></div><div>🌇</div></div>
+    </div>
+    <h2>Oxirgi 7 kun <small>namozlar soni</small></h2>
+    <div class="card"><div class="grid7" id="hist7"></div></div>
+    <div class="card mt">
+      <div class="t">🔔 Namoz eslatmalari</div>
+      <div class="note mt">Har bir namoz vaqtida iPhone'ingiz eslatsin desangiz, Toshkent vaqtlari bo'yicha 90 kunlik kalendarni qo'shing.</div>
+      <a class="btn mt" style="--c:var(--ibodat);display:flex;align-items:center;justify-content:center;text-decoration:none" href="namoz-vaqtlari-toshkent.ics">Kalendarga qo'shish</a>
+    </div>
+  </section>
+
+  <!-- ===== KITOB ===== -->
+  <section class="page" id="p-kitob">
+    <div class="seg" id="bookSeg"><button class="on" data-f="reading">O'qiyapman</button><button data-f="todo">Navbatda</button><button data-f="done">O'qildi</button></div>
+    <div class="list mt" id="books"></div>
+    <button class="btn mt" id="addBookBtn" style="--c:var(--kitob);width:100%">＋ Kitob qo'shish</button>
+    <h2>Marketolog uchun tavsiyalar</h2>
+    <div class="list" id="recs"></div>
+  </section>
+</div>
+
+<nav><div class="in-nav">
+  <button class="on" data-p="ish"><span class="ic">✅</span>Bugun</button>
+  <button data-p="sport"><span class="ic">🏋️</span>Sport</button>
+  <button data-p="ibodat"><span class="ic">🕌</span>Ibodat</button>
+  <button data-p="kitob"><span class="ic">📚</span>Kitoblar</button>
+</div></nav>
+
+<div class="sheet-bg" id="sheet"><div class="sheet" id="sheetIn"></div></div>
+<div class="toast" id="toast"></div>
+
+<script src="times.js"></script>
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const KEY='reja-v1';
+const OFF=5*3600e3; // Toshkent vaqti
+const nowT=()=>new Date(Date.now()+OFF);           // UTC-maydonlari = Toshkent vaqti
+const keyOf=d=>d.toISOString().slice(0,10);
+const today=()=>keyOf(nowT());
+const addDays=(k,n)=>{const d=new Date(k+'T00:00:00Z');d.setUTCDate(d.getUTCDate()+n);return keyOf(d)};
+const dow=k=>new Date(k+'T00:00:00Z').getUTCDay(); // 0=Yak
+const OYLAR=['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
+const KUNLAR=['Yakshanba','Dushanba','Seshanba','Chorshanba','Payshanba','Juma','Shanba'];
+const QK=['Ya','Du','Se','Ch','Pa','Ju','Sh'];
+const human=k=>{const d=new Date(k+'T00:00:00Z');return d.getUTCDate()+'-'+OYLAR[d.getUTCMonth()]};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,10);
+
+let S;
+try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S) S={tasks:[],sport:{},ibodat:{},books:[]};
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('on'),1800)}
+
+/* ---------- navigation ---------- */
+const TITLES={ish:'Bugun',sport:'Sport',ibodat:'Ibodat',kitob:'Kitoblar'};
+function go(p){
+  $$('nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  $$('.page').forEach(s=>s.classList.toggle('on',s.id==='p-'+p));
+  $('#pageTitle').textContent=TITLES[p]; window.scrollTo(0,0);
+  try{localStorage.setItem(KEY+'-tab',p)}catch(e){}
+}
+$$('nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+
+/* ---------- greeting ---------- */
+function greet(){const h=nowT().getUTCHours();
+  $('#hello').textContent=(h<11?'Xayrli tong':h<17?'Xayrli kun':'Xayrli kech')+', Abrorbek 👋';}
+
+/* ---------- TASKS ---------- */
+let viewDay=today(), urgent=false;
+$('#urgentT').onclick=()=>{urgent=!urgent;$('#urgentT').classList.toggle('on',urgent);$('#urgentNote').style.display=urgent?'block':'none'};
+$('#addTask').onclick=addTask;
+$('#taskIn').addEventListener('keydown',e=>{if(e.key==='Enter')addTask()});
+function addTask(){
+  const t=$('#taskIn').value.trim(); if(!t){$('#taskIn').focus();return}
+  const time=$('#taskTime').value||'';
+  if(urgent&&!time){toast('Muhim ish uchun vaqt kiriting ⏰');$('#taskTime').focus();return}
+  S.tasks.push({id:uid(),title:t,time,urgent,done:false,date:viewDay});
+  save(); $('#taskIn').value='';$('#taskTime').value='';
+  if(urgent){urgent=false;$('#urgentT').classList.remove('on');$('#urgentNote').style.display='none';
+    const task=S.tasks[S.tasks.length-1]; renderTasks(); alarmSheet(task); return}
+  renderTasks(); toast('Qo\'shildi ✓');
+}
+$('#prevD').onclick=()=>{viewDay=addDays(viewDay,-1);renderTasks()};
+$('#nextD').onclick=()=>{viewDay=addDays(viewDay,1);renderTasks()};
+function renderTasks(){
+  const k=today();
+  $('#dayLbl').textContent=viewDay===k?'Bugun, '+human(viewDay):viewDay===addDays(k,1)?'Ertaga, '+human(viewDay):viewDay===addDays(k,-1)?'Kecha, '+human(viewDay):KUNLAR[dow(viewDay)]+', '+human(viewDay);
+  $('#dateLbl').textContent=human(viewDay)+' uchun';
+  const list=S.tasks.filter(t=>t.date===viewDay).sort((a,b)=>(a.done-b.done)||(b.urgent-a.urgent)||((a.time||'99')<(b.time||'99')?-1:1));
+  const el=$('#tasks');
+  if(!list.length){el.innerHTML='<div class="card empty"><div class="e">🗒️</div>Bu kunga ish yo\'q.<br>Eng muhim 3 ta ishdan boshlang.</div>';}
+  else el.innerHTML=list.map(t=>`<div class="item ${t.done?'done':''}" data-id="${t.id}">
+    <button class="check ${t.done?'on':''}" data-a="tog"></button>
+    <div class="grow"><div class="t">${esc(t.title)}</div>
+      <div class="s">${t.time?'🕒 '+t.time:''}${t.urgent?'<span class="tag">MUHIM</span>':''}</div></div>
+    ${t.urgent&&t.time?'<button class="icon-btn" data-a="alarm" title="Budilnik">⏰</button>':''}
+    <button class="icon-btn" data-a="more">⋯</button></div>`).join('');
+  hero();
+}
+$('#tasks').onclick=e=>{
+  const b=e.target.closest('[data-a]'); if(!b) return;
+  const id=b.closest('.item').dataset.id, t=S.tasks.find(x=>x.id===id);
+  if(b.dataset.a==='tog'){t.done=!t.done;save();renderTasks();if(t.done)toast('Barakalla! ✓')}
+  if(b.dataset.a==='alarm') alarmSheet(t);
+  if(b.dataset.a==='more') taskSheet(t);
+};
+function taskSheet(t){
+  openSheet(`<h3>${esc(t.title)}</h3>
+   <div class="list">
+    <button class="btn ghost" id="mv1">➡️ Ertaga ko'chirish</button>
+    ${t.time?'<button class="btn ghost" id="al">⏰ Kalendarga budilnik qo\'shish</button>':''}
+    <button class="btn" style="--c:var(--danger)" id="del">🗑 O'chirish</button>
+   </div>`);
+  $('#mv1').onclick=()=>{t.date=addDays(t.date,1);t.done=false;save();closeSheet();renderTasks();toast('Ertaga ko\'chirildi')};
+  if($('#al')) $('#al').onclick=()=>{closeSheet();alarmSheet(t)};
+  $('#del').onclick=()=>{S.tasks=S.tasks.filter(x=>x!==t);save();closeSheet();renderTasks()};
+}
+
+/* ---- alarm via .ics (iPhone Calendar) ---- */
+function icsFor(t,before){
+  const [h,m]=t.time.split(':').map(Number);
+  const start=new Date(Date.parse(t.date+'T00:00:00Z')+(h*60+m)*60e3-OFF);
+  const f=d=>d.toISOString().replace(/[-:]/g,'').slice(0,15)+'Z';
+  const end=new Date(start.getTime()+30*60e3);
+  const al=[...new Set([before,0])].map(b=>`BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:${t.title}\r\nTRIGGER:-PT${b}M\r\nEND:VALARM`).join('\r\n');
+  return `BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Reja//UZ\r\nBEGIN:VEVENT\r\nUID:${t.id}-${Date.now()}@reja\r\nDTSTAMP:${f(new Date())}\r\nDTSTART:${f(start)}\r\nDTEND:${f(end)}\r\nSUMMARY:⏰ ${t.title.replace(/[,;\\]/g,' ')}\r\n${al}\r\nEND:VEVENT\r\nEND:VCALENDAR\r\n`;
+}
+function alarmSheet(t){
+  openSheet(`<h3>⏰ Budilnik: ${esc(t.title)}</h3>
+   <div class="note">${human(t.date)}, soat <b>${t.time}</b>. Qachon eslatsin?</div>
+   <div class="seg mt" id="bf"><button data-b="5">5 daq oldin</button><button class="on" data-b="15">15 daq</button><button data-b="60">1 soat</button></div>
+   <a class="btn mt" id="icsA" style="display:flex;align-items:center;justify-content:center;text-decoration:none;--c:var(--danger)">iPhone kalendariga qo'shish</a>
+   <div class="note mt">Bosganingizdan so'ng <b>"Kalendarga qo'shish"</b> ni tanlang — iPhone belgilangan vaqtda va ish boshlanganda ovoz bilan eslatadi.</div>`);
+  let before=15;
+  const upd=()=>{const blob=new Blob([icsFor(t,before)],{type:'text/calendar'});const a=$('#icsA');if(a._u)URL.revokeObjectURL(a._u);a._u=URL.createObjectURL(blob);a.href=a._u;a.download='budilnik.ics'};
+  $('#bf').onclick=e=>{const b=e.target.closest('button');if(!b)return;before=+b.dataset.b;$$('#bf button').forEach(x=>x.classList.toggle('on',x===b));upd()};
+  upd();
+}
+
+/* ---------- SPORT ---------- */
+const PLAN={1:['A: Ko\'krak va qo\'l',[['Isinish (joyida yugurish)','5 daq'],['Otjimaniya','4 × 12'],['Dips (stul bilan)','3 × 10'],['Plank','3 × 45 s'],['Cho\'zilish','5 daq']]],
+ 3:['B: Oyoq va qorin',[['Isinish','5 daq'],['Prisedaniya','4 × 15'],['Vypad (har oyoqqa)','3 × 10'],['Press (krunch)','3 × 20'],['Cho\'zilish','5 daq']]],
+ 5:['C: Butun tana',[['Isinish','5 daq'],['Burpi','4 × 10'],['Otjimaniya','3 × 15'],['Prisedaniya sakrash bilan','3 × 12'],['Velosiped (press)','3 × 20'],['Cho\'zilish','5 daq']]]};
+const weekStart=k=>addDays(k,-((dow(k)+6)%7));
+function renderSport(){
+  const k=today(), ws=weekStart(k);
+  let html='',cnt=0;
+  for(let i=0;i<7;i++){const d=addDays(ws,i),w=dow(d),plan=!!PLAN[w],ok=!!S.sport[d];if(ok)cnt++;
+    html+=`<div class="day ${plan?'plan':''} ${ok?'ok':''} ${d===k?'today':''}">${QK[w]}<i>${ok?'✓':plan?'🏋️':'·'}</i></div>`}
+  $('#week').innerHTML=html;
+  $('#sWeek').textContent=cnt+'/3';
+  $('#sTotal').textContent=Object.keys(S.sport).length;
+  let st=0,w=ws; if(cnt<3) w=addDays(ws,-7);
+  for(;;){let c=0;for(let i=0;i<7;i++)if(S.sport[addDays(w,i)])c++; if(c>=3){st++;w=addDays(w,-7)}else break;}
+  $('#sStreak').textContent=st;
+  const d=dow(k), p=PLAN[d]||PLAN[[1,3,5].find(x=>x>d)||1];
+  $('#wName').textContent=PLAN[d]?p[0]:'Keyingi: '+p[0];
+  $('#workout').innerHTML=p[1].map(([n,r])=>`<div class="item"><div class="grow"><div class="t">${n}</div></div><div class="pt" style="color:var(--sport)">${r}</div></div>`).join('');
+  const done=!!S.sport[k];
+  $('#sportDone').textContent=done?'✓ Bugun bajarildi (bekor qilish)':'✅ Mashg\'ulot tugadi';
+  $('#sportDone').classList.toggle('ghost',done);
+}
+$('#sportDone').onclick=()=>{const k=today();if(S.sport[k])delete S.sport[k];else{S.sport[k]=true;toast('Zo\'r! 💪')}save();renderSport();hero()};
+
+/* ---------- IBODAT ---------- */
+const NAM=[['fajr','Bomdod','🌄'],['dhuhr','Peshin','☀️'],['asr','Asr','🌤️'],['maghrib','Shom','🌇'],['isha','Xufton','🌙']];
+const ib=k=>S.ibodat[k]||(S.ibodat[k]={n:{},q:0,am:false,pm:false});
+const mins=s=>{const[h,m]=s.split(':');return h*60+ +m};
+function renderIbodat(){
+  const k=today(), T=(window.NAMOZ||{})[k], d=ib(k);
+  const nm=nowT(), cur=nm.getUTCHours()*60+nm.getUTCMinutes();
+  let curIdx=-1;
+  if(T){for(let i=0;i<5;i++) if(cur>=mins(T[i])) curIdx=i;}
+  $('#namozList').innerHTML=NAM.map(([id,n,e],i)=>`<div class="item ${d.n[id]?'done':''} ${i===curIdx&&!d.n[id]?'now':''}" data-n="${id}">
+    <button class="check ${d.n[id]?'on':''}" style="--c:var(--ibodat)"></button>
+    <div class="grow"><div class="t">${e} ${n}</div><div class="s">${i===curIdx?'Hozirgi vaqt':''}</div></div>
+    <div class="pt">${T?T[i]:'--:--'}</div></div>`).join('');
+  const c=NAM.filter(([id])=>d.n[id]).length;
+  $('#namozCount').textContent=c+'/5';
+  $('#quranN').textContent=d.q;
+  $('#zAM .check').classList.toggle('on',d.am);$('#zAM').classList.toggle('done',d.am);
+  $('#zPM .check').classList.toggle('on',d.pm);$('#zPM').classList.toggle('done',d.pm);
+  // next prayer
+  let nx=null;
+  if(T){for(let i=0;i<5;i++) if(mins(T[i])>cur){nx=[NAM[i][1],T[i],mins(T[i])-cur];break}
+    if(!nx){const T2=window.NAMOZ[addDays(k,1)]; if(T2) nx=[NAM[0][1]+' (ertaga)',T2[0],24*60-cur+mins(T2[0])];}}
+  if(nx){$('#nextName').textContent='Keyingi: '+nx[0];$('#nextTime').textContent=nx[1];
+    const h=Math.floor(nx[2]/60),m=nx[2]%60;$('#nextLeft').textContent=(h?h+' soat ':'')+m+' daqiqa qoldi';}
+  else{$('#nextName').textContent='Namoz vaqtlari yangilanishi kerak';$('#nextTime').textContent='--:--';$('#nextLeft').textContent='';}
+  // 7 days
+  let h='';for(let i=6;i>=0;i--){const dk=addDays(k,-i),x=S.ibodat[dk],n=x?Object.values(x.n).filter(Boolean).length:0;
+    const a=n/5; h+=`<div><div class="d">${QK[dow(dk)]}</div><div class="dot" style="background:${n?`rgba(47,211,154,${.2+.8*a})`:'var(--card2)'};${n===5?'color:#06301f':''}">${n}</div></div>`}
+  $('#hist7').innerHTML=h;
+}
+$('#namozList').onclick=e=>{const it=e.target.closest('[data-n]');if(!it)return;const d=ib(today());d.n[it.dataset.n]=!d.n[it.dataset.n];save();renderIbodat();hero()};
+$$('[data-q]').forEach(b=>b.onclick=()=>{const d=ib(today());d.q=Math.max(0,d.q+ +b.dataset.q);save();renderIbodat();hero()});
+$('#zAM').onclick=()=>{const d=ib(today());d.am=!d.am;save();renderIbodat();hero()};
+$('#zPM').onclick=()=>{const d=ib(today());d.pm=!d.pm;save();renderIbodat();hero()};
+
+/* ---------- KITOBLAR ---------- */
+const RECS=[['$100M Offers','Alex Hormozi',150],['Influence (Ta\'sir psixologiyasi)','Robert Cialdini',320],['Building a StoryBrand','Donald Miller',240],['This Is Marketing','Seth Godin',270],['Atomic Habits','James Clear',320],['Ogilvy on Advertising','David Ogilvy',224]];
+const COLORS=['#5b8cff','#ff8a3d','#2fd39a','#b07cff','#ff5d73','#f5b83d'];
+let bf='reading';
+$('#bookSeg').onclick=e=>{const b=e.target.closest('button');if(!b)return;bf=b.dataset.f;$$('#bookSeg button').forEach(x=>x.classList.toggle('on',x===b));renderBooks()};
+function renderBooks(){
+  const list=S.books.filter(b=>b.status===bf);
+  $('#books').innerHTML=list.length?list.map(b=>{const p=b.pages?Math.min(100,Math.round(b.read/b.pages*100)):0;
+    const col=COLORS[b.title.length%COLORS.length];
+    return `<div class="item" data-b="${b.id}"><div class="cover" style="background:linear-gradient(160deg,${col},${col}88)">${esc(b.title[0]||'?')}</div>
+      <div class="grow"><div class="t">${esc(b.title)}</div><div class="s">${esc(b.author||'')}${b.pages?` · ${b.read}/${b.pages} bet`:''}</div>
+      ${b.status!=='todo'?`<div class="bar"><i style="width:${b.status==='done'?100:p}%"></i></div>`:''}</div>
+      <button class="icon-btn" data-a="edit">✎</button></div>`}).join('')
+    :`<div class="card empty"><div class="e">📚</div>${bf==='reading'?'Hozir o\'qiyotgan kitobingiz yo\'q.<br>Pastdagi tavsiyalardan boshlang.':bf==='todo'?'Navbatda kitob yo\'q.':'Hali tugatilgan kitob yo\'q.'}</div>`;
+  const have=new Set(S.books.map(b=>b.title));
+  $('#recs').innerHTML=RECS.filter(r=>!have.has(r[0])).map((r,i)=>`<div class="item"><div class="cover" style="background:linear-gradient(160deg,${COLORS[i%6]},${COLORS[i%6]}88)">${r[0][0]==='$'?'$':r[0][0]}</div>
+    <div class="grow"><div class="t">${esc(r[0])}</div><div class="s">${r[1]} · ~${r[2]} bet</div></div>
+    <button class="btn sm" style="--c:var(--kitob)" data-r="${esc(r[0])}">＋</button></div>`).join('')||'<div class="note">Hammasi ro\'yxatingizda 👏</div>';
+}
+$('#recs').onclick=e=>{const b=e.target.closest('[data-r]');if(!b)return;const r=RECS.find(x=>x[0]===b.dataset.r);
+  S.books.push({id:uid(),title:r[0],author:r[1],pages:r[2],read:0,status:'todo'});save();renderBooks();toast('Navbatga qo\'shildi')};
+$('#books').onclick=e=>{const it=e.target.closest('[data-b]');if(!it)return;bookSheet(S.books.find(b=>b.id===it.dataset.b))};
+$('#addBookBtn').onclick=()=>bookSheet(null);
+function bookSheet(b){
+  const nb=!b; b=b||{id:uid(),title:'',author:'',pages:'',read:0,status:'reading'};
+  openSheet(`<h3>${nb?'Yangi kitob':'Kitob'}</h3><div class="add">
+   <input class="in" id="bT" placeholder="Kitob nomi" value="${esc(b.title)}">
+   <input class="in" id="bA" placeholder="Muallif" value="${esc(b.author)}">
+   <div class="row"><input class="in" id="bR" type="number" inputmode="numeric" placeholder="O'qilgan bet" value="${b.read||''}"><span class="note">/</span><input class="in" id="bP" type="number" inputmode="numeric" placeholder="Jami bet" value="${b.pages||''}"></div>
+   <div class="seg" id="bS"><button data-s="todo">Navbatda</button><button data-s="reading">O'qiyapman</button><button data-s="done">O'qildi</button></div>
+   <button class="btn" style="--c:var(--kitob)" id="bSave">Saqlash</button>
+   ${nb?'':'<button class="btn ghost" id="bDel">🗑 O\'chirish</button>'}</div>`);
+  let st=b.status; const ss=()=>$$('#bS button').forEach(x=>x.classList.toggle('on',x.dataset.s===st)); ss();
+  $('#bS').onclick=e=>{const x=e.target.closest('button');if(x){st=x.dataset.s;ss()}};
+  $('#bSave').onclick=()=>{const t=$('#bT').value.trim();if(!t){$('#bT').focus();return}
+    Object.assign(b,{title:t,author:$('#bA').value.trim(),pages:+$('#bP').value||0,read:+$('#bR').value||0,status:st});
+    if(st==='done'&&b.pages)b.read=b.pages; if(nb)S.books.push(b); save();closeSheet();bf=st;
+    $$('#bookSeg button').forEach(x=>x.classList.toggle('on',x.dataset.f===st));renderBooks();hero();
+    if(st==='done')toast('Tabriklaymiz! 🎉')};
+  if($('#bDel'))$('#bDel').onclick=()=>{S.books=S.books.filter(x=>x!==b);save();closeSheet();renderBooks()};
+}
+
+/* ---------- hero (kunlik natija) ---------- */
+function hero(){
+  const k=today(), tt=S.tasks.filter(t=>t.date===k), td=tt.filter(t=>t.done).length;
+  const d=S.ibodat[k]||{n:{},q:0}, nc=Object.values(d.n||{}).filter(Boolean).length;
+  const sportDay=!!PLAN[dow(k)], sp=!!S.sport[k];
+  let parts=[]; if(tt.length)parts.push(td/tt.length); parts.push(nc/5); if(sportDay)parts.push(sp?1:0); parts.push(Math.min(1,(d.q||0)/2));
+  const pct=Math.round(parts.reduce((a,b)=>a+b,0)/parts.length*100);
+  $('#ringC').style.strokeDashoffset=201-201*pct/100; $('#ringT').textContent=pct+'%';
+  $('#heroH').textContent=pct>=100?'Mukammal kun! 🏆':pct>=60?'Zo\'r ketyapsiz 🔥':pct>0?'Davom eting 💪':'Kun boshlandi ☀️';
+  const left=tt.length-td;
+  $('#heroP').textContent=tt.length?(left?`Yana ${left} ta ish qoldi.`:'Bugungi ishlar bajarildi!'):'Bugungi rejangizni tuzing.';
+  $('#heroChips').innerHTML=`<span class="chip">✅ ${td}/${tt.length}</span><span class="chip">🕌 ${nc}/5</span>${sportDay?`<span class="chip">🏋️ ${sp?'✓':'—'}</span>`:''}<span class="chip">📖 ${d.q||0} bet</span>`;
+}
+
+/* ---------- sheet ---------- */
+function openSheet(h){$('#sheetIn').innerHTML='<div class="grab"></div>'+h;$('#sheet').classList.add('on')}
+function closeSheet(){$('#sheet').classList.remove('on')}
+$('#sheet').onclick=e=>{if(e.target.id==='sheet')closeSheet()};
+
+/* ---------- init ---------- */
+const standalone=window.navigator.standalone||matchMedia('(display-mode: standalone)').matches;
+if(!standalone&&/iPhone|iPad/.test(navigator.userAgent)) $('#installCard').style.display='block';
+function all(){greet();renderTasks();renderSport();renderIbodat();renderBooks();hero()}
+all();
+let last=today();
+setInterval(()=>{if(today()!==last){last=today();viewDay=last}renderIbodat();greet();hero()},30000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)all()});
+try{const t=localStorage.getItem(KEY+'-tab');if(t&&TITLES[t])go(t)}catch(e){}
+})();
+</script>
+</body>
+</html>
